@@ -1,0 +1,2 @@
+-- Seed kosong untuk Part 01.
+-- Data Al-Qur'an (ayat, terjemahan, dll.) akan ditambahkan pada fase berikutnya.
