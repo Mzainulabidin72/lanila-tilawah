@@ -62,7 +62,7 @@ export function RegisterPage() {
   if (sentTo) {
     return (
       <div className="text-center">
-        <span className="mx-auto flex h-14 w-14 items-center justify-center rounded-2xl bg-primary-soft text-primary">
+        <span className="mx-auto flex h-14 w-14 items-center justify-center rounded-2xl bg-primary-soft text-brand">
           <MailCheck className="h-7 w-7" aria-hidden />
         </span>
         <h2 className="mt-6 text-2xl font-extrabold tracking-tight">Cek email kamu</h2>
@@ -70,7 +70,7 @@ export function RegisterPage() {
           Kami mengirim tautan konfirmasi ke <strong className="text-ink">{sentTo}</strong>. Buka tautan itu untuk
           mengaktifkan akun, lalu masuk.
         </p>
-        <Link to="/login" className="mt-8 inline-flex min-h-[44px] items-center font-semibold text-primary hover:underline">
+        <Link to="/login" className="mt-8 inline-flex min-h-[44px] items-center font-semibold text-brand hover:underline">
           Kembali ke halaman masuk
         </Link>
       </div>
@@ -149,7 +149,7 @@ export function RegisterPage() {
 
       <p className="mt-8 text-center text-sm text-muted-strong">
         Sudah punya akun?{' '}
-        <Link to="/login" className="font-semibold text-primary hover:underline">
+        <Link to="/login" className="font-semibold text-brand hover:underline">
           Masuk
         </Link>
       </p>

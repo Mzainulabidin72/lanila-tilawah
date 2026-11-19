@@ -15,6 +15,8 @@ export interface AuthContextValue {
   isRecovery: boolean
   displayName: string
   signOut: () => Promise<void>
+  /** Muat ulang profil dari database (mis. setelah mengubah nama). */
+  refreshProfile: () => Promise<void>
 }
 
 export const AuthContext = createContext<AuthContextValue | null>(null)
@@ -76,6 +78,11 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     }
   }, [userId])
 
+  const refreshProfile = useCallback(async () => {
+    if (!userId) return
+    setProfile(await profileService.getProfile(userId))
+  }, [userId])
+
   const signOut = useCallback(async () => {
     try {
       await authService.signOut()
@@ -90,8 +97,8 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     const user = session?.user ?? null
     const metaName = (user?.user_metadata?.full_name as string | undefined) ?? ''
     const displayName = profile?.full_name || metaName || user?.email?.split('@')[0] || 'Pengguna'
-    return { session, user, profile, loading, isRecovery, displayName, signOut }
-  }, [session, profile, loading, isRecovery, signOut])
+    return { session, user, profile, loading, isRecovery, displayName, signOut, refreshProfile }
+  }, [session, profile, loading, isRecovery, signOut, refreshProfile])
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>
 }

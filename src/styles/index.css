@@ -1,7 +1,50 @@
 @import '@fontsource-variable/plus-jakarta-sans';
+@import './typography.css';
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+/* Design tokens: channel RGB agar mendukung modifier opacity (bg-primary/60). */
+:root {
+  --c-primary: 8 127 104;
+  --c-primary-dark: 6 102 83;
+  --c-primary-soft: 230 244 240;
+  --c-brand: 8 127 104;
+  --c-brand-strong: 6 102 83;
+  --c-secondary: 21 152 121;
+  --c-secondary-soft: 232 246 242;
+  --c-accent: 214 182 106;
+  --c-accent-soft: 247 240 222;
+  --c-canvas: 250 251 249;
+  --c-surface: 255 255 255;
+  --c-ink: 32 41 35;
+  --c-muted: 120 132 125;
+  --c-muted-strong: 91 102 95;
+  --c-line: 230 235 231;
+  --c-danger: 180 35 24;
+  --c-danger-soft: 253 236 234;
+}
+
+.dark {
+  color-scheme: dark;
+  --c-primary: 10 138 114;
+  --c-primary-dark: 8 122 99;
+  --c-primary-soft: 21 58 49;
+  --c-brand: 92 205 177;
+  --c-brand-strong: 122 219 194;
+  --c-secondary: 52 179 150;
+  --c-secondary-soft: 18 51 43;
+  --c-accent: 214 182 106;
+  --c-accent-soft: 58 49 26;
+  --c-canvas: 15 21 18;
+  --c-surface: 22 30 26;
+  --c-ink: 232 239 234;
+  --c-muted: 139 154 146;
+  --c-muted-strong: 169 183 175;
+  --c-line: 38 50 44;
+  --c-danger: 249 112 102;
+  --c-danger-soft: 58 26 23;
+}
 
 @layer base {
   html {
@@ -18,6 +61,7 @@
     * {
       animation-duration: 0.01ms !important;
       transition-duration: 0.01ms !important;
+      scroll-behavior: auto !important;
     }
   }
 }

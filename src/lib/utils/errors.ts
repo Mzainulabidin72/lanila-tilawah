@@ -44,6 +44,8 @@ export function toAppError(error: unknown): AppError {
     case 'over_request_rate_limit':
     case 'over_email_send_rate_limit':
       return new AppError('Terlalu banyak percobaan. Tunggu beberapa saat lalu coba lagi.', code)
+    case 'reauthentication_needed':
+      return new AppError('Demi keamanan, keluar lalu masuk kembali sebelum mengganti kata sandi.', code)
     case 'same_password':
       return new AppError('Kata sandi baru harus berbeda dari yang lama.', code)
     case 'otp_expired':

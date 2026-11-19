@@ -9,7 +9,7 @@ export function Alert({ kind, children }: { kind: 'error' | 'success'; children:
       role={kind === 'error' ? 'alert' : 'status'}
       className={cn(
         'flex items-start gap-3 rounded-xl border px-4 py-3 text-sm',
-        kind === 'error' ? 'border-danger/30 bg-danger-soft text-danger' : 'border-primary/30 bg-primary-soft text-primary-dark',
+        kind === 'error' ? 'border-danger/30 bg-danger-soft text-danger' : 'border-primary/30 bg-primary-soft text-brand-strong',
       )}
     >
       <Icon className="mt-0.5 h-4 w-4 shrink-0" aria-hidden />

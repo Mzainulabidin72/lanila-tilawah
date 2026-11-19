@@ -16,7 +16,7 @@ export function Logo({ className, showWordmark = true, light = false }: { classN
       {showWordmark && (
         <div className="leading-tight">
           <p className={cn('text-lg font-extrabold tracking-tight', light ? 'text-white' : 'text-ink')}>Lanila</p>
-          <p className={cn('text-xs font-medium', light ? 'text-white/80' : 'text-primary')}>Tilawah</p>
+          <p className={cn('text-xs font-medium', light ? 'text-white/80' : 'text-brand')}>Tilawah</p>
         </div>
       )}
     </div>

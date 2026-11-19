@@ -1,0 +1,18 @@
+/* Skala tipografi aplikasi + konfigurasi teks Arab (terpisah dari font UI). */
+@layer components {
+  .type-page-title { @apply text-2xl font-extrabold tracking-tight text-ink sm:text-3xl; }
+  .type-section-title { @apply text-lg font-bold tracking-tight text-ink; }
+  .type-card-title { @apply text-base font-semibold text-ink; }
+  .type-body { @apply text-sm leading-relaxed text-muted-strong sm:text-base; }
+  .type-label { @apply text-sm font-medium text-ink; }
+  .type-caption { @apply text-xs leading-snug text-muted-strong; }
+  .type-nav { @apply text-sm font-medium; }
+
+  /* Teks Al-Qur'an. Font aslinya dipasang di Part 03 (ganti font-quran di tailwind.config.js). */
+  .quran-text {
+    @apply font-quran;
+    direction: rtl;
+    line-height: 2.2;
+    font-size: 1.75rem;
+  }
+}

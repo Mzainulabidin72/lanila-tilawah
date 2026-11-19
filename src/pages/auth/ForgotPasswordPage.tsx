@@ -35,7 +35,7 @@ export function ForgotPasswordPage() {
   if (sent) {
     return (
       <div className="text-center">
-        <span className="mx-auto flex h-14 w-14 items-center justify-center rounded-2xl bg-primary-soft text-primary">
+        <span className="mx-auto flex h-14 w-14 items-center justify-center rounded-2xl bg-primary-soft text-brand">
           <MailCheck className="h-7 w-7" aria-hidden />
         </span>
         <h2 className="mt-6 text-2xl font-extrabold tracking-tight">Permintaan terkirim</h2>
@@ -43,7 +43,7 @@ export function ForgotPasswordPage() {
           Jika <strong className="text-ink">{email.trim()}</strong> terdaftar, kami sudah mengirim tautan untuk mengatur
           ulang kata sandi. Cek juga folder spam.
         </p>
-        <Link to="/login" className="mt-8 inline-flex min-h-[44px] items-center font-semibold text-primary hover:underline">
+        <Link to="/login" className="mt-8 inline-flex min-h-[44px] items-center font-semibold text-brand hover:underline">
           Kembali ke halaman masuk
         </Link>
       </div>

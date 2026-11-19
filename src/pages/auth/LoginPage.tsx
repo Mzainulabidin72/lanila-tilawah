@@ -78,7 +78,7 @@ export function LoginPage() {
         />
 
         <div className="flex justify-end">
-          <Link to="/forgot-password" className="text-sm font-medium text-primary hover:underline">
+          <Link to="/forgot-password" className="text-sm font-medium text-brand hover:underline">
             Lupa kata sandi?
           </Link>
         </div>
@@ -90,7 +90,7 @@ export function LoginPage() {
 
       <p className="mt-8 text-center text-sm text-muted-strong">
         Belum punya akun?{' '}
-        <Link to="/register" className="font-semibold text-primary hover:underline">
+        <Link to="/register" className="font-semibold text-brand hover:underline">
           Daftar
         </Link>
       </p>

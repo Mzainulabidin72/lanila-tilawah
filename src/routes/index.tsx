@@ -6,13 +6,14 @@ import { LoginPage } from '@/pages/auth/LoginPage'
 import { RegisterPage } from '@/pages/auth/RegisterPage'
 import { ForgotPasswordPage } from '@/pages/auth/ForgotPasswordPage'
 import { ResetPasswordPage } from '@/pages/auth/ResetPasswordPage'
-import { DashboardPage } from '@/pages/dashboard/DashboardPage'
-import { PlaceholderPage } from '@/pages/dashboard/PlaceholderPage'
-import { ProfilePage } from '@/pages/dashboard/ProfilePage'
+import { HomePage } from '@/pages/home/HomePage'
+import { QuranPage } from '@/pages/quran/QuranPage'
+import { AudioPage } from '@/pages/audio/AudioPage'
+import { LearningPage } from '@/pages/learning/LearningPage'
+import { MemorizationPage } from '@/pages/memorization/MemorizationPage'
+import { ProgressPage } from '@/pages/progress/ProgressPage'
+import { SettingsPage } from '@/pages/settings/SettingsPage'
 import { NotFoundPage } from '@/pages/errors/NotFoundPage'
-import { NAV_ITEMS } from '@/config/nav'
-
-const PLACEHOLDERS = NAV_ITEMS.filter((n) => !['/', '/profil'].includes(n.path))
 
 export function AppRoutes() {
   return (
@@ -32,11 +33,13 @@ export function AppRoutes() {
 
       <Route element={<ProtectedRoute />}>
         <Route element={<AppLayout />}>
-          <Route index element={<DashboardPage />} />
-          {PLACEHOLDERS.map((n) => (
-            <Route key={n.path} path={n.path} element={<PlaceholderPage item={n} />} />
-          ))}
-          <Route path="/profil" element={<ProfilePage />} />
+          <Route index element={<HomePage />} />
+          <Route path="/quran" element={<QuranPage />} />
+          <Route path="/audio" element={<AudioPage />} />
+          <Route path="/belajar" element={<LearningPage />} />
+          <Route path="/hafalan" element={<MemorizationPage />} />
+          <Route path="/progres" element={<ProgressPage />} />
+          <Route path="/profil" element={<SettingsPage />} />
         </Route>
       </Route>
 

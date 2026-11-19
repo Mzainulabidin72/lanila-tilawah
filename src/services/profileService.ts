@@ -18,4 +18,15 @@ export const profileService = {
     if (error) throw toAppError(error)
     return data as UserPreferences | null
   },
+
+  /** Hanya kolom full_name yang boleh diubah (dibatasi grant + RLS di database). */
+  async updateFullName(userId: string, fullName: string): Promise<void> {
+    const { error } = await supabase.from('profiles').update({ full_name: fullName.trim() }).eq('id', userId)
+    if (error) throw toAppError(error)
+  },
+
+  async updateTheme(userId: string, theme: 'light' | 'dark'): Promise<void> {
+    const { error } = await supabase.from('user_preferences').update({ theme }).eq('user_id', userId)
+    if (error) throw toAppError(error)
+  },
 }

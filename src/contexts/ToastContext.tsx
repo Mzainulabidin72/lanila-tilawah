@@ -18,7 +18,7 @@ export interface ToastApi {
 export const ToastContext = createContext<ToastApi | null>(null)
 
 const STYLES: Record<ToastKind, string> = {
-  success: 'border-primary/30 bg-primary-soft text-primary-dark',
+  success: 'border-primary/30 bg-primary-soft text-brand-strong',
   error: 'border-danger/30 bg-danger-soft text-danger',
   info: 'border-line bg-surface text-ink',
 }
@@ -52,7 +52,7 @@ export function ToastProvider({ children }: { children: ReactNode }) {
     <ToastContext.Provider value={api}>
       {children}
       <div
-        className="pointer-events-none fixed inset-x-0 top-0 z-[60] flex flex-col items-center gap-2 px-4 pt-4"
+        className="pointer-events-none fixed inset-x-0 top-0 z-[80] flex flex-col items-center gap-2 px-4 pt-4"
         aria-live="polite"
       >
         {items.map((t) => {
