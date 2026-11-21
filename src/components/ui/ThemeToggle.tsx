@@ -1,5 +1,6 @@
-import { Moon, Sun } from 'lucide-react'
+import { Monitor, Moon, Sun, type LucideIcon } from 'lucide-react'
 import { IconButton } from './IconButton'
+import { Tooltip } from './Tooltip'
 import { useTheme } from '@/hooks/useTheme'
 import { useAuth } from '@/hooks/useAuth'
 import { profileService } from '@/services/profileService'
@@ -16,29 +17,29 @@ function useThemeChange() {
   }
 }
 
+const OPTIONS: Array<{ value: Theme; label: string; icon: LucideIcon }> = [
+  { value: 'light', label: 'Terang', icon: Sun },
+  { value: 'dark', label: 'Gelap', icon: Moon },
+  { value: 'system', label: 'Sistem', icon: Monitor },
+]
+
 export function ThemeToggle({ variant = 'icon', className }: { variant?: 'icon' | 'segmented'; className?: string }) {
-  const { theme } = useTheme()
+  const { theme, resolvedTheme } = useTheme()
   const change = useThemeChange()
 
   if (variant === 'icon') {
-    const dark = theme === 'dark'
+    const dark = resolvedTheme === 'dark'
+    const label = dark ? 'Aktifkan mode terang' : 'Aktifkan mode gelap'
     return (
-      <IconButton
-        icon={dark ? Sun : Moon}
-        label={dark ? 'Aktifkan mode terang' : 'Aktifkan mode gelap'}
-        onClick={() => change(dark ? 'light' : 'dark')}
-        className={className}
-      />
+      <Tooltip label={label} className={className}>
+        <IconButton icon={dark ? Sun : Moon} label={label} onClick={() => change(dark ? 'light' : 'dark')} />
+      </Tooltip>
     )
   }
 
-  const options: Array<{ value: Theme; label: string; icon: typeof Sun }> = [
-    { value: 'light', label: 'Terang', icon: Sun },
-    { value: 'dark', label: 'Gelap', icon: Moon },
-  ]
   return (
-    <div role="radiogroup" aria-label="Tema tampilan" className={cn('grid grid-cols-2 gap-1 rounded-xl border border-line bg-canvas p-1', className)}>
-      {options.map(({ value, label, icon: Icon }) => {
+    <div role="radiogroup" aria-label="Tema tampilan" className={cn('grid grid-cols-3 gap-1 rounded-xl border border-line bg-canvas p-1', className)}>
+      {OPTIONS.map(({ value, label, icon: Icon }) => {
         const active = theme === value
         return (
           <button
@@ -48,11 +49,11 @@ export function ThemeToggle({ variant = 'icon', className }: { variant?: 'icon' 
             aria-checked={active}
             onClick={() => change(value)}
             className={cn(
-              'flex min-h-[44px] items-center justify-center gap-2 rounded-lg text-sm font-semibold transition-colors',
+              'flex min-h-[44px] items-center justify-center gap-1.5 rounded-lg px-2 text-sm font-semibold transition-colors',
               active ? 'bg-surface text-brand-strong shadow-card' : 'text-muted-strong hover:text-ink',
             )}
           >
-            <Icon className="h-4 w-4" aria-hidden />
+            <Icon className="h-4 w-4 shrink-0" aria-hidden />
             {label}
           </button>
         )

@@ -15,6 +15,7 @@ export default {
         accent: { DEFAULT: v('accent'), soft: v('accent-soft') },
         canvas: v('canvas'),
         surface: v('surface'),
+        elevated: v('elevated'), // dropdown, dialog, toast
         ink: v('ink'),
         muted: v('muted'),
         'muted-strong': v('muted-strong'),

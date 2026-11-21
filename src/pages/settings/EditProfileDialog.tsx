@@ -1,6 +1,6 @@
 import { useState, type FormEvent } from 'react'
 import { User } from 'lucide-react'
-import { Modal } from '@/components/ui/Modal'
+import { BottomSheet } from '@/components/ui/BottomSheet'
 import { Button } from '@/components/ui/Button'
 import { TextField } from '@/components/ui/TextField'
 import { Alert } from '@/components/ui/Alert'
@@ -11,10 +11,10 @@ import { toAppError } from '@/lib/utils/errors'
 
 export function EditProfileDialog({ open, onClose }: { open: boolean; onClose: () => void }) {
   return (
-    <Modal open={open} onClose={onClose} title="Edit profil">
+    <BottomSheet open={open} onClose={onClose} title="Edit profil">
       {/* Form di-mount hanya saat dialog terbuka agar state selalu segar. */}
       <EditProfileForm onClose={onClose} />
-    </Modal>
+    </BottomSheet>
   )
 }
 

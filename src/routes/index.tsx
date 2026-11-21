@@ -1,3 +1,4 @@
+import { lazy } from 'react'
 import { Route, Routes } from 'react-router-dom'
 import { ProtectedRoute, PublicOnlyRoute } from './ProtectedRoute'
 import { AuthLayout } from '@/layouts/AuthLayout'
@@ -6,14 +7,16 @@ import { LoginPage } from '@/pages/auth/LoginPage'
 import { RegisterPage } from '@/pages/auth/RegisterPage'
 import { ForgotPasswordPage } from '@/pages/auth/ForgotPasswordPage'
 import { ResetPasswordPage } from '@/pages/auth/ResetPasswordPage'
-import { HomePage } from '@/pages/home/HomePage'
-import { QuranPage } from '@/pages/quran/QuranPage'
-import { AudioPage } from '@/pages/audio/AudioPage'
-import { LearningPage } from '@/pages/learning/LearningPage'
-import { MemorizationPage } from '@/pages/memorization/MemorizationPage'
-import { ProgressPage } from '@/pages/progress/ProgressPage'
-import { SettingsPage } from '@/pages/settings/SettingsPage'
 import { NotFoundPage } from '@/pages/errors/NotFoundPage'
+
+// Halaman dimuat on-demand; fallback = PageSkeleton di AppLayout.
+const HomePage = lazy(() => import('@/pages/home/HomePage').then((m) => ({ default: m.HomePage })))
+const QuranPage = lazy(() => import('@/pages/quran/QuranPage').then((m) => ({ default: m.QuranPage })))
+const AudioPage = lazy(() => import('@/pages/audio/AudioPage').then((m) => ({ default: m.AudioPage })))
+const LearningPage = lazy(() => import('@/pages/learning/LearningPage').then((m) => ({ default: m.LearningPage })))
+const MemorizationPage = lazy(() => import('@/pages/memorization/MemorizationPage').then((m) => ({ default: m.MemorizationPage })))
+const ProgressPage = lazy(() => import('@/pages/progress/ProgressPage').then((m) => ({ default: m.ProgressPage })))
+const SettingsPage = lazy(() => import('@/pages/settings/SettingsPage').then((m) => ({ default: m.SettingsPage })))
 
 export function AppRoutes() {
   return (

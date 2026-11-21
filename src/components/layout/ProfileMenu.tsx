@@ -2,8 +2,8 @@ import { useState } from 'react'
 import { Link } from 'react-router-dom'
 import { Brain, LogOut, Settings } from 'lucide-react'
 import { Avatar } from '@/components/ui/Avatar'
-import { Dropdown } from '@/components/ui/Dropdown'
-import { Modal } from '@/components/ui/Modal'
+import { DropdownMenu } from '@/components/ui/DropdownMenu'
+import { BottomSheet } from '@/components/ui/BottomSheet'
 import { ThemeToggle } from '@/components/ui/ThemeToggle'
 import { useAuth } from '@/hooks/useAuth'
 import { useLogout } from '@/hooks/useLogout'
@@ -64,7 +64,7 @@ export function ProfileMenu() {
 
   if (isTabletUp) {
     return (
-      <Dropdown
+      <DropdownMenu
         label="Menu profil"
         triggerClassName="py-1 pl-1 pr-2"
         trigger={
@@ -75,7 +75,7 @@ export function ProfileMenu() {
         }
       >
         {(close) => <MenuBody onDone={close} mobile={false} />}
-      </Dropdown>
+      </DropdownMenu>
     )
   }
 
@@ -89,9 +89,9 @@ export function ProfileMenu() {
       >
         <Avatar name={displayName} />
       </button>
-      <Modal open={sheetOpen} onClose={() => setSheetOpen(false)} title="Akun">
+      <BottomSheet open={sheetOpen} onClose={() => setSheetOpen(false)} title="Akun">
         <MenuBody onDone={() => setSheetOpen(false)} mobile />
-      </Modal>
+      </BottomSheet>
     </>
   )
 }

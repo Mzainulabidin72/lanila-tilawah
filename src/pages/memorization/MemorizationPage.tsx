@@ -1,10 +1,11 @@
-import { BookMarked, CalendarClock, Plus, Target } from 'lucide-react'
+import { BookMarked, CalendarClock, Plus, Repeat2, Target } from 'lucide-react'
 import { PageHeader } from '@/components/ui/PageHeader'
 import { SectionHeader } from '@/components/ui/SectionHeader'
 import { Card } from '@/components/ui/Card'
 import { Button } from '@/components/ui/Button'
 import { EmptyState } from '@/components/ui/EmptyState'
 import { ProgressBar } from '@/components/ui/ProgressBar'
+import { StatCard } from '@/components/ui/StatCard'
 import { useComingSoon } from '@/hooks/useComingSoon'
 
 export function MemorizationPage() {
@@ -24,45 +25,42 @@ export function MemorizationPage() {
         }
       />
 
-      <div className="grid gap-4 lg:grid-cols-2">
-        <Card className="space-y-4 p-5 sm:p-6">
-          <SectionHeader title="Ringkasan hafalan" />
-          <ProgressBar value={null} label="Ringkasan hafalan" />
-          <p className="type-caption">Belum ada data hafalan.</p>
-        </Card>
-
-        <Card className="space-y-4 p-5 sm:p-6">
-          <SectionHeader title="Target saat ini" />
-          <div className="flex items-start gap-3">
-            <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-primary-soft text-brand">
-              <Target className="h-5 w-5" aria-hidden />
-            </span>
-            <div>
-              <p className="type-card-title">Belum ada target</p>
-              <p className="type-caption mt-1">Tentukan surah atau ayat yang ingin kamu hafal.</p>
-            </div>
-          </div>
-          <Button variant="secondary" onClick={() => soon('Atur target hafalan')}>
-            Atur target
-          </Button>
+      <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+        <StatCard icon={BookMarked} label="Surah dihafal" value={null} hint="Belum ada data" />
+        <StatCard icon={Repeat2} label="Murajaah hari ini" value={null} hint="Belum ada data" />
+        <Card className="space-y-3 p-4 sm:col-span-2 sm:p-5 lg:col-span-1">
+          <p className="type-card-title">Progres hafalan</p>
+          <ProgressBar value={null} label="Progres hafalan" />
+          <p className="type-caption">Belum ada hafalan.</p>
         </Card>
       </div>
 
-      <section className="space-y-4" aria-labelledby="terakhir-dihafal">
-        <div id="terakhir-dihafal">
-          <SectionHeader title="Terakhir dihafal" />
-        </div>
-        <Card>
-          <EmptyState icon={BookMarked} title="Belum ada hafalan" description="Surah yang sudah kamu hafal akan tampil di sini." action={<Button onClick={add}>Tambah hafalan</Button>} />
-        </Card>
-      </section>
+      <div className="grid gap-6 lg:grid-cols-2">
+        <section className="space-y-4" aria-labelledby="hafalan-baru">
+          <div id="hafalan-baru">
+            <SectionHeader title="Hafalan baru" description="Target yang sedang kamu hafal." />
+          </div>
+          <Card>
+            <EmptyState icon={Target} title="Belum ada target hafalan" description="Tentukan surah atau ayat yang ingin kamu hafal." action={<Button onClick={add}>Tambah hafalan</Button>} />
+          </Card>
+        </section>
 
-      <section className="space-y-4" aria-labelledby="murajaah">
-        <div id="murajaah">
+        <section className="space-y-4" aria-labelledby="murajaah">
+          <div id="murajaah">
+            <SectionHeader title="Murajaah" description="Pengulangan hafalan yang sudah ada." />
+          </div>
+          <Card>
+            <EmptyState icon={Repeat2} title="Belum ada murajaah" description="Hafalan yang perlu diulang akan muncul di sini." />
+          </Card>
+        </section>
+      </div>
+
+      <section className="space-y-4" aria-labelledby="jadwal">
+        <div id="jadwal">
           <SectionHeader title="Jadwal murajaah" />
         </div>
         <Card>
-          <EmptyState icon={CalendarClock} title="Belum ada jadwal" description="Jadwal pengulangan hafalan akan dibuat otomatis setelah ada hafalan." />
+          <EmptyState icon={CalendarClock} title="Belum ada jadwal" description="Jadwal pengulangan akan dibuat setelah fitur hafalan tersedia." />
         </Card>
       </section>
     </div>

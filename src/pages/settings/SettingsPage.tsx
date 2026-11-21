@@ -1,12 +1,13 @@
 import { useEffect, useState, type ReactNode } from 'react'
 import { useLocation } from 'react-router-dom'
-import { Bell, Camera, ChevronRight, KeyRound, Languages, LogOut, Pencil, Type as TypeIcon } from 'lucide-react'
+import { Bell, Camera, ChevronRight, KeyRound, LogOut, Pencil, Type as TypeIcon } from 'lucide-react'
 import { PageHeader } from '@/components/ui/PageHeader'
 import { SectionHeader } from '@/components/ui/SectionHeader'
 import { Card } from '@/components/ui/Card'
 import { Button } from '@/components/ui/Button'
 import { Badge } from '@/components/ui/Badge'
 import { Avatar } from '@/components/ui/Avatar'
+import { Switch } from '@/components/ui/Switch'
 import { ThemeToggle } from '@/components/ui/ThemeToggle'
 import { useAuth } from '@/hooks/useAuth'
 import { useLogout } from '@/hooks/useLogout'
@@ -87,16 +88,32 @@ export function SettingsPage() {
       <Card id="preferensi" className="scroll-mt-24 p-5 sm:p-6">
         <SectionHeader title="Preferensi" />
         <div className="mt-2 divide-y divide-line">
-          <Row label="Bahasa" hint="Bahasa lain akan ditambahkan nanti.">
-            <div className="flex min-h-[44px] items-center gap-2 text-sm font-medium">
-              <Languages className="h-4 w-4 text-muted-strong" aria-hidden />
-              Bahasa Indonesia
-            </div>
+          <Row label="Bahasa" hint="Lokalisasi penuh disiapkan untuk fase berikutnya.">
+            <select
+              aria-label="Bahasa aplikasi"
+              defaultValue="id"
+              className="min-h-[48px] w-full rounded-xl border border-line bg-surface px-3 text-base text-ink focus:border-primary focus:outline-none focus:ring-2 focus:ring-primary/25"
+            >
+              <option value="id">Bahasa Indonesia</option>
+              <option value="en" disabled>
+                English (segera hadir)
+              </option>
+            </select>
           </Row>
-          <Row label="Tema tampilan" hint="Tersimpan di perangkat ini.">
+          <Row label="Tema tampilan" hint="Terang, gelap, atau ikuti sistem. Tersimpan di perangkat ini.">
             <ThemeToggle variant="segmented" />
           </Row>
-          <SoonRow icon={Bell} label="Notifikasi" hint="Pengingat membaca dan murajaah." onClick={() => soon('Preferensi notifikasi')} />
+          <div className="flex min-h-[64px] items-center gap-3 py-3">
+            <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-primary-soft text-brand">
+              <Bell className="h-5 w-5" aria-hidden />
+            </span>
+            <span className="min-w-0 flex-1">
+              <span className="type-label block">Pengingat membaca</span>
+              <span className="type-caption block">Notifikasi belum tersedia.</span>
+            </span>
+            <Badge tone="gold">Segera</Badge>
+            <Switch checked={false} onChange={() => undefined} label="Pengingat membaca (belum tersedia)" disabled />
+          </div>
           <SoonRow icon={TypeIcon} label="Preferensi membaca" hint="Ukuran teks dan tampilan ayat." onClick={() => soon('Preferensi membaca', 'Pengaturan tampilan bacaan tersedia bersama pembaca Al-Qur’an di Part 03.')} />
         </div>
       </Card>

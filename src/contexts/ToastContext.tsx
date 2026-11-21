@@ -20,7 +20,7 @@ export const ToastContext = createContext<ToastApi | null>(null)
 const STYLES: Record<ToastKind, string> = {
   success: 'border-primary/30 bg-primary-soft text-brand-strong',
   error: 'border-danger/30 bg-danger-soft text-danger',
-  info: 'border-line bg-surface text-ink',
+  info: 'border-line bg-elevated text-ink',
 }
 const ICONS = { success: CheckCircle2, error: AlertCircle, info: Info }
 

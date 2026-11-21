@@ -25,7 +25,7 @@ export const profileService = {
     if (error) throw toAppError(error)
   },
 
-  async updateTheme(userId: string, theme: 'light' | 'dark'): Promise<void> {
+  async updateTheme(userId: string, theme: UserPreferences['theme']): Promise<void> {
     const { error } = await supabase.from('user_preferences').update({ theme }).eq('user_id', userId)
     if (error) throw toAppError(error)
   },

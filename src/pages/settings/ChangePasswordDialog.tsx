@@ -1,6 +1,6 @@
 import { useState, type FormEvent } from 'react'
 import { Lock } from 'lucide-react'
-import { Modal } from '@/components/ui/Modal'
+import { BottomSheet } from '@/components/ui/BottomSheet'
 import { Button } from '@/components/ui/Button'
 import { TextField } from '@/components/ui/TextField'
 import { Alert } from '@/components/ui/Alert'
@@ -12,9 +12,9 @@ import { validatePassword } from '@/lib/utils/validation'
 
 export function ChangePasswordDialog({ open, onClose }: { open: boolean; onClose: () => void }) {
   return (
-    <Modal open={open} onClose={onClose} title="Ganti kata sandi">
+    <BottomSheet open={open} onClose={onClose} title="Ganti kata sandi">
       <ChangePasswordForm onClose={onClose} />
-    </Modal>
+    </BottomSheet>
   )
 }
 

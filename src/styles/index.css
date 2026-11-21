@@ -4,44 +4,48 @@
 @tailwind components;
 @tailwind utilities;
 
-/* Design tokens: channel RGB agar mendukung modifier opacity (bg-primary/60). */
+/* Design tokens: channel RGB agar mendukung modifier opacity (bg-primary/60).
+   muted = teks sekunder #77827C (dekoratif/placeholder); muted-strong = turunan lebih gelap
+   untuk teks kecil agar lolos kontras WCAG AA. */
 :root {
-  --c-primary: 8 127 104;
-  --c-primary-dark: 6 102 83;
-  --c-primary-soft: 230 244 240;
-  --c-brand: 8 127 104;
-  --c-brand-strong: 6 102 83;
+  --c-primary: 22 124 101;
+  --c-primary-dark: 16 91 75;
+  --c-primary-soft: 232 244 239;
+  --c-brand: 22 124 101;
+  --c-brand-strong: 16 91 75;
   --c-secondary: 21 152 121;
   --c-secondary-soft: 232 246 242;
-  --c-accent: 214 182 106;
-  --c-accent-soft: 247 240 222;
-  --c-canvas: 250 251 249;
+  --c-accent: 201 164 92;
+  --c-accent-soft: 246 238 219;
+  --c-canvas: 248 250 248;
   --c-surface: 255 255 255;
-  --c-ink: 32 41 35;
-  --c-muted: 120 132 125;
-  --c-muted-strong: 91 102 95;
-  --c-line: 230 235 231;
+  --c-elevated: 255 255 255;
+  --c-ink: 32 43 39;
+  --c-muted: 119 130 124;
+  --c-muted-strong: 89 101 95;
+  --c-line: 231 236 232;
   --c-danger: 180 35 24;
   --c-danger-soft: 253 236 234;
 }
 
 .dark {
   color-scheme: dark;
-  --c-primary: 10 138 114;
-  --c-primary-dark: 8 122 99;
-  --c-primary-soft: 21 58 49;
+  --c-primary: 22 124 101;
+  --c-primary-dark: 27 143 117;
+  --c-primary-soft: 30 58 49;
   --c-brand: 92 205 177;
   --c-brand-strong: 122 219 194;
   --c-secondary: 52 179 150;
   --c-secondary-soft: 18 51 43;
-  --c-accent: 214 182 106;
-  --c-accent-soft: 58 49 26;
-  --c-canvas: 15 21 18;
-  --c-surface: 22 30 26;
-  --c-ink: 232 239 234;
-  --c-muted: 139 154 146;
-  --c-muted-strong: 169 183 175;
-  --c-line: 38 50 44;
+  --c-accent: 201 164 92;
+  --c-accent-soft: 58 49 28;
+  --c-canvas: 17 26 23;
+  --c-surface: 25 36 31;
+  --c-elevated: 32 45 39;
+  --c-ink: 241 245 242;
+  --c-muted: 138 152 144;
+  --c-muted-strong: 165 179 170;
+  --c-line: 43 57 50;
   --c-danger: 249 112 102;
   --c-danger-soft: 58 26 23;
 }

@@ -83,67 +83,70 @@ Import repo, framework preset **Vite**, tambahkan dua env var di atas. `vercel.j
 
 ---
 
-# Part 02 — Design System & Layout Aplikasi
+# Part 02 — UI/UX Foundation, Design System & Layout Responsif
 
-> ⚠️ **Status verifikasi:** sama seperti Part 01, kode Part 02 ditulis tanpa `node_modules`/browser,
-> jadi **belum dijalankan**. Yang sudah dicek secara statis: semua import ter-resolve dan tidak ada import
-> yang tidak terpakai; data surah diverifikasi (114 surah, total 6.236 ayat, 86 Makkiyah / 28 Madaniyah).
-> `tsc`, build, tampilan responsif, dan dark mode **belum diuji**; jalankan checklist di bawah.
+> ⚠️ **Status verifikasi:** kode ditulis tanpa `node_modules`/browser, jadi `tsc`, build, tampilan responsif,
+> dark mode, dan regresi auth Part 01 **belum diuji**. Sudah dicek statis: semua import ter-resolve dan tidak ada
+> import yang tidak terpakai; data surah diverifikasi (114 surah, 6.236 ayat, 86 Makkiyah / 28 Madaniyah).
 
-## Cara memasang ke repo yang sudah ada
+## Memasang ke repo yang sudah ada
 
-Ekstrak zip, lalu **timpa/salin** isi `src/`, `index.html`, `tailwind.config.js`, `README.md` ke repo kamu.
-Jangan menimpa `.env` dan `package-lock.json`. Tidak ada dependency baru, jadi `npm install` tidak wajib.
-Hapus file lama yang sudah digantikan (jika masih ada):
+Salin isi `src/`, `index.html`, `tailwind.config.js`, `public/favicon.svg`, `README.md` ke repo (jangan timpa `.env`
+dan `package-lock.json`). Tidak ada dependency baru. Hapus sisa file lama bila ada:
+`src/pages/dashboard/`, `src/components/layout/{Header,MobileNav,MobileDrawer,UserMenu,NavLinks}.tsx`,
+`src/components/ui/Dropdown.tsx` (diganti `DropdownMenu.tsx`).
 
-- `src/pages/dashboard/` (diganti `pages/home`, `quran`, `audio`, `learning`, `memorization`, `progress`, `settings`)
-- `src/components/layout/{Header,MobileNav,MobileDrawer,UserMenu,NavLinks}.tsx`
+## Design tokens
 
-## Design system
+- **Warna**: CSS variable di `src/styles/index.css` (`:root` / `.dark`) → `tailwind.config.js`. Pakai nama semantik
+  (`bg-canvas`, `bg-surface`, `bg-elevated`, `text-ink`, `text-brand`, `border-line`, `bg-primary-soft`), jangan hex langsung.
+  Palet: Emerald `#167C65`, Deep Emerald `#105B4B`, Soft Mint `#E8F4EF`, Gold `#C9A45C`, latar `#F8FAF8`; dark sesuai spesifikasi.
+  Catatan kontras: `#77827C` (muted) hanya ~3,9:1 di atas putih, jadi dipakai untuk placeholder/dekoratif;
+  teks sekunder berukuran kecil memakai `muted-strong` yang lebih gelap.
+- **Tipografi**: `src/styles/typography.css` (`type-*`). Teks Arab: `quran-text` / `font-quran`, RTL, line-height 2.2
+  (siap untuk harakat). Font Al-Qur'an dipasang di Part 03.
+- **Breakpoint**: mobile <768 (bottom nav) · tablet 768–1279 (sidebar rail ikon) · desktop ≥1280 (sidebar penuh).
 
-- **Token warna**: CSS variable di `src/styles/index.css` (`:root` dan `.dark`), dipetakan di `tailwind.config.js`.
-  Komponen memakai nama semantik (`bg-surface`, `text-ink`, `border-line`, `text-brand`, `bg-primary-soft`), jadi
-  otomatis mengikuti tema. Jangan memakai hex langsung di komponen.
-- **Tipografi**: `src/styles/typography.css` (`type-page-title`, `type-section-title`, `type-card-title`, `type-body`,
-  `type-label`, `type-caption`, `type-nav`). Teks Arab memakai kelas `quran-text` / `font-quran`, terpisah dari font UI.
-  Font Al-Qur'an dipasang di Part 03.
-- **Komponen** (`src/components/ui`): Button (+`buttonStyles` untuk Link), IconButton, Card, SectionHeader, PageHeader,
-  SearchInput, ProgressBar, ProgressRing, EmptyState, LoadingState, Modal (bottom sheet di mobile), Dropdown,
-  ThemeToggle, Avatar, Badge, Alert, TextField.
-- **Navigasi**: Sidebar (rail ikon di tablet, penuh di ≥1024px), BottomNavigation 5 item di mobile
-  (Beranda, Al-Qur'an, Audio, Belajar, Progres). Hafalan dan Profil diakses lewat menu profil (bottom sheet),
-  halaman Belajar, dan Beranda.
-- **Dark mode**: default terang. Pilihan disimpan di `localStorage` (`lanila-tilawah-theme`), diterapkan sebelum
-  render pertama (tanpa kedip), dan disinkronkan ke `user_preferences.theme` bila bisa.
-- **Fitur yang dijadwalkan nanti** membuka dialog "Segera hadir" yang sama (`useComingSoon`), tidak ada tombol mati.
+## Komponen (`src/components/ui`, `layout`, `navigation`, `shared`)
 
-## Yang benar-benar berfungsi di Part 02
+Button (+`buttonStyles`), IconButton, TextField (input), SearchInput, Card, StatCard, SectionHeader, PageHeader, Badge,
+Avatar, DropdownMenu, Modal, BottomSheet, EmptyState, LoadingState (+PageSkeleton), Skeleton, Toast (`ToastProvider`),
+Tooltip, ProgressBar, ProgressRing, Tabs, Switch, ThemeToggle, Alert, Spinner; Sidebar, TopBar, ProfileMenu,
+BottomNavigation, NavLinks; SurahListItem, WeeklyActivityChart, PlaceholderNote.
 
-Navigasi dan highlight rute aktif, ganti tema, menu profil, logout (memakai auth Part 01), edit nama profil
-(update `profiles.full_name` lewat RLS), ganti kata sandi (`supabase.auth.updateUser`), pencarian dan filter surah,
-"Tampilkan lebih banyak" di Audio.
+## Tema (Terang / Gelap / Sistem)
 
-## Data sementara (jelas ditandai di UI)
+`ThemeContext` menyimpan pilihan di `localStorage` (`lanila-tilawah-theme`), default **Terang**. Skrip di `index.html`
+menerapkan tema sebelum render pertama (tanpa kedip). Mode **Sistem** mengikuti `prefers-color-scheme` secara langsung.
+Pilihan juga ditulis ke `user_preferences.theme` bila memungkinkan (tidak dibaca balik di perangkat baru).
 
-`src/data/surahs.ts`: nama, jumlah ayat, tempat turun. **Belum divalidasi**, tanpa teks Arab. Diganti dataset
-tervalidasi di Part 03. Tidak ada ayat, statistik, atau target buatan di mana pun.
+## Halaman
 
-## Checklist verifikasi Part 02 (belum dijalankan)
+Beranda, Al-Qur'an (tab Surah/Juz), Audio (tab Qari/Surah), Belajar, Hafalan, Progres, Profil & Pengaturan.
+Semua nilai statistik kosong ("—"/empty state), tidak ada data buatan. Daftar surah dan nama qari ditandai placeholder.
+Fitur fase berikutnya membuka dialog "Segera hadir"; kontrol yang belum aktif (pemutar audio, switch notifikasi)
+tampil nonaktif dan berlabel.
 
-- [ ] `npm run build` (termasuk `tsc --noEmit`) tanpa error
-- [ ] Halaman: Beranda, Al-Qur'an, Audio, Belajar, Hafalan, Progres, Profil & Pengaturan
-- [ ] Lebar 360, 390, 430, 768, 1024, 1280, 1440: tanpa scroll horizontal, konten tidak tertutup bottom nav
-- [ ] Light/dark: sidebar, kartu, dialog, input, nav, toast; refresh halaman mempertahankan tema
-- [ ] Edit profil mengubah nama di sidebar/menu; ganti kata sandi sukses; logout dari sidebar, menu profil, dan Pengaturan
-- [ ] Dialog: Esc menutup, Tab tidak keluar dari dialog, fokus kembali ke tombol pemicu
-- [ ] Console browser bersih
+## Yang benar-benar berfungsi
 
-## Keterbatasan yang diketahui
+Navigasi + rute aktif, tema 3 mode, menu profil (dropdown di tablet/desktop, bottom sheet di mobile), logout (auth Part 01),
+edit nama profil, ganti kata sandi, tab, pencarian/filter surah dan qari, lazy-loading halaman dengan skeleton.
 
-- Logo masih placeholder (ganti dengan aset resmi Lanila, lihat Part 01).
-- Tema belum dimuat dari database saat login di perangkat baru (hanya ditulis ke database).
-- Bahasa selain Indonesia, notifikasi, preferensi membaca, foto profil: ditandai "Segera".
-- Ganti kata sandi bisa meminta login ulang jika Supabase mengaktifkan "secure password change".
+## Checklist verifikasi (belum dijalankan)
+
+- [ ] `npm run build` tanpa error
+- [ ] Regresi Part 01: daftar, masuk, lupa/reset sandi, refresh sesi, rute terproteksi, logout
+- [ ] Lebar 360, 375, 390, 430, 768, 820, 1024, 1280, 1440, 1920: tanpa scroll horizontal, tidak tertutup bottom nav
+- [ ] Terang/Gelap/Sistem di semua halaman, dialog, dropdown, toast; refresh mempertahankan tema
+- [ ] Dialog/sheet: Esc, trap fokus, fokus kembali; Tabs: panah/Home/End
+- [ ] Console bersih
+
+## Keterbatasan
+
+- Logo masih placeholder (ganti dengan aset resmi Lanila).
+- Tidak ada navigasi panah di DropdownMenu (hanya Tab/Esc); Tooltip hanya hover/fokus.
+- Tema belum dimuat dari database di perangkat baru.
+- Pilihan bahasa hanya Indonesia; lokalisasi belum ada. Switch notifikasi nonaktif.
 - Tidak ada test otomatis.
 
-**Fase berikutnya: Part 03 (Al-Qur'an).** Jangan dimulai sebelum Part 02 direview.
+**Berikutnya: Part 03 — Quran Reader.** Jangan dimulai sebelum Part 02 direview.

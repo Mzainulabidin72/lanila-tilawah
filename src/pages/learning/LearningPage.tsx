@@ -1,13 +1,15 @@
 import { Link } from 'react-router-dom'
-import { Brain, Languages, Library, Mic, ScrollText, ChevronRight } from 'lucide-react'
+import { Brain, ChevronRight, Languages, Library, Mic, ScrollText } from 'lucide-react'
 import { PageHeader } from '@/components/ui/PageHeader'
 import { Card } from '@/components/ui/Card'
 import { Button } from '@/components/ui/Button'
 import { Badge } from '@/components/ui/Badge'
+import { ProgressBar } from '@/components/ui/ProgressBar'
+import { PlaceholderNote } from '@/components/shared/PlaceholderNote'
 import { useComingSoon } from '@/hooks/useComingSoon'
 
 const TOPICS = [
-  { title: 'Belajar Hijaiyah', text: 'Kenali huruf hijaiyah dan cara melafalkannya.', icon: Languages },
+  { title: 'Huruf Hijaiyah', text: 'Kenali huruf hijaiyah dan cara melafalkannya.', icon: Languages },
   { title: 'Tajwid', text: 'Pahami kaidah membaca agar bacaan lebih tepat.', icon: Mic },
   { title: 'Tafsir', text: 'Telusuri makna dan penjelasan ayat.', icon: ScrollText },
   { title: "Kosakata Al-Qur'an", text: 'Perbanyak kosakata yang sering muncul.', icon: Library },
@@ -19,6 +21,7 @@ export function LearningPage() {
   return (
     <div className="space-y-6">
       <PageHeader title="Belajar" description="Pahami Al-Qur'an selangkah demi selangkah. Materi dikerjakan di fase berikutnya." />
+      <PlaceholderNote>Belum ada materi. Kartu di bawah hanya kerangka tampilan, bukan konten pembelajaran yang sudah diverifikasi.</PlaceholderNote>
 
       <ul className="grid grid-cols-1 gap-4 sm:grid-cols-2">
         {TOPICS.map(({ title, text, icon: Icon }) => (
@@ -32,8 +35,12 @@ export function LearningPage() {
               </div>
               <h2 className="type-card-title mt-4">{title}</h2>
               <p className="type-body mt-1 flex-1">{text}</p>
+              <div className="mt-4 space-y-1.5">
+                <ProgressBar value={null} label={`Progres belajar ${title}`} />
+                <p className="type-caption">Belum dimulai</p>
+              </div>
               <Button variant="secondary" className="mt-5 self-start" onClick={() => soon(title, 'Materi pembelajaran ini sedang disiapkan.')}>
-                Lihat detail
+                Mulai belajar
               </Button>
             </Card>
           </li>

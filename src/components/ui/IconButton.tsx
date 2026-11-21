@@ -14,7 +14,6 @@ export function IconButton({ icon: Icon, label, variant = 'ghost', className, ty
     <button
       type={type}
       aria-label={label}
-      title={label}
       className={cn(
         'inline-flex h-11 w-11 shrink-0 items-center justify-center rounded-xl transition-colors disabled:cursor-not-allowed disabled:opacity-50',
         variant === 'soft' ? 'bg-primary-soft text-brand-strong hover:bg-primary-soft/70' : 'text-muted-strong hover:bg-primary-soft hover:text-brand-strong',
