@@ -6,3 +6,8 @@ dist
 *.local
 .vercel
 .DS_Store
+
+# Part 03: berkas sumber Al-Qur'an & hasil build (unduh manual; jangan commit terjemahan berlisensi non-komersial)
+data/quran-source/*
+!data/quran-source/README.md
+data/quran-build

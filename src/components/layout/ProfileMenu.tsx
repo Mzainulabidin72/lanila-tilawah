@@ -1,7 +1,8 @@
 import { useState } from 'react'
-import { Link } from 'react-router-dom'
+import { Link, useLocation } from 'react-router-dom'
 import { Brain, LogOut, Settings } from 'lucide-react'
 import { Avatar } from '@/components/ui/Avatar'
+import { buttonStyles } from '@/components/ui/Button'
 import { DropdownMenu } from '@/components/ui/DropdownMenu'
 import { BottomSheet } from '@/components/ui/BottomSheet'
 import { ThemeToggle } from '@/components/ui/ThemeToggle'
@@ -58,9 +59,19 @@ function MenuBody({ onDone, mobile }: { onDone: () => void; mobile: boolean }) {
 }
 
 export function ProfileMenu() {
-  const { displayName } = useAuth()
+  const { displayName, user, loading } = useAuth()
+  const { pathname, search } = useLocation()
   const isTabletUp = useMediaQuery('(min-width: 768px)')
   const [sheetOpen, setSheetOpen] = useState(false)
+
+  if (loading) return null
+  if (!user) {
+    return (
+      <Link to="/login" state={{ from: pathname + search }} className={buttonStyles('primary')}>
+        Masuk
+      </Link>
+    )
+  }
 
   if (isTabletUp) {
     return (

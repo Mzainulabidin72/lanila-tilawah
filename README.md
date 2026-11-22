@@ -150,3 +150,81 @@ edit nama profil, ganti kata sandi, tab, pencarian/filter surah dan qari, lazy-l
 - Tidak ada test otomatis.
 
 **Berikutnya: Part 03 — Quran Reader.** Jangan dimulai sebelum Part 02 direview.
+
+
+---
+
+# Part 03 — Pembaca Al-Qur'an, Data Terverifikasi, Penanda, Posisi Baca
+
+> ⚠️ **STATUS DATA: belum ada data Al-Qur'an yang diimpor.** Lingkungan penulisan kode tidak punya internet dan teks
+> Al-Qur'an tidak boleh ditulis dari ingatan/AI. Pembaca menampilkan "Data Al-Qur'an belum tersedia" sampai kamu
+> mengimpor dataset Tanzil dan validasinya lulus. Baca `docs/QURAN_DATA.md` (sumber, lisensi, langkah impor).
+>
+> ⚠️ **Belum diuji:** `npm run build`, tampilan di browser, sinkronisasi Supabase, RLS. Yang sudah diuji di sini:
+> `node scripts/quran/selftest.mjs` (18/18 lulus, data sintetis) dan pemeriksaan sintaks 102 file TypeScript (0 error).
+> Tipe (`tsc`) belum bisa diperiksa tanpa `node_modules`.
+
+## Urutan kerja yang benar
+
+1. Pasang file Part 03 ke repo (lihat daftar di bawah), jalankan `npm run build`, perbaiki bila ada error tipe.
+2. Jalankan migrasi `supabase/migrations/20260102000000_quran_reader.sql`.
+3. **Putuskan lisensi terjemahan** (Tanzil: hanya non-komersial) lalu unduh berkas sumber (`data/quran-source/README.md`).
+4. `npm run quran:validate` → harus `✓ Validasi lulus`. Lalu `npm run quran:import` (lihat docs/QURAN_DATA.md).
+5. **Verifikasi manual** sampel ayat terhadap Mushaf cetak (1:1–7, 2:255, 112–114, awal/akhir tiap juz).
+6. Jalankan checklist di bawah.
+
+Untuk menguji tampilan lebih dulu: `VITE_QURAN_PLACEHOLDER=true` di `.env` (hanya mode dev; isinya jelas berlabel BUKAN Al-Qur'an,
+salin/bagikan dinonaktifkan, penanda hanya lokal).
+
+## Yang diimplementasikan
+
+- **Skema** (`quran_surahs`, `quran_ayahs`, `quran_translations`, `quran_juz`, `quran_dataset_info`, `bookmarks`, `reading_positions`)
+  dengan RLS. Data master publik hanya-baca; `bookmarks` CRUD milik sendiri; `reading_positions` baca/ubah milik sendiri.
+  Penanda dan posisi memakai FK komposit ke `quran_ayahs`, jadi referensi ayat tak valid ditolak database.
+- **Gerbang validasi**: UI hanya menampilkan Al-Qur'an bila `quran_dataset_info.validated = true` dan 114 surah/6.236 ayat;
+  surah yang jumlah ayatnya tidak cocok atau penomorannya berlubang tidak ditampilkan.
+- **Rute**: `/quran` (Surah · Juz · Cari ayat), `/quran/:surahId?ayah=N`, `/quran/penanda`. Rute Al-Qur'an **publik**
+  (tanpa login); halaman lain tetap terproteksi.
+- **Pembaca**: nama Arab/Latin, jumlah ayat, tempat turun, surah sebelumnya/berikutnya, navigasi Surah/Juz (bottom sheet),
+  kartu ayat (`lang="ar" dir="rtl"`, nomor ayat di elemen terpisah, tanpa CSS transform, line-height 2.2),
+  basmalah diambil dari data 1:1 (bukan diketik), salin Arab/terjemahan, bagikan (Web Share → fallback salin), atribusi sumber.
+- **Tampilan membaca**: ukuran Arab (5 level), ukuran terjemahan (3), tampil/sembunyikan terjemahan, tema; tersimpan lokal.
+- **Penanda**: guest → `localStorage`; login → Supabase. Saat login, penanda guest digabung (`ON CONFLICT DO NOTHING`, tanpa duplikat),
+  catatan opsional (maks. 500), optimistis dengan rollback bila gagal.
+- **Posisi baca**: lokal langsung, ke server dengan debounce 1,5 dtk. Hanya tersimpan setelah pengguna benar-benar menggulir
+  atau membuka ayat. Server menolak data lebih lama (fungsi `save_reading_position`). Rekonsiliasi saat login: milik user lain
+  diabaikan; yang `readAt`-nya lebih baru menang; seri → server. Antrean dicoba ulang saat online / tab disembunyikan.
+- **Beranda**: kartu "Lanjutkan membaca" memakai posisi nyata.
+
+## File baru/ubah utama
+
+Baru: `supabase/migrations/20260102000000_quran_reader.sql`, `scripts/quran/*`, `docs/QURAN_DATA.md`, `data/quran-source/README.md`,
+`src/types/quran.ts`, `src/services/{quranService,bookmarkService,readingPositionService}.ts`,
+`src/contexts/{ReaderPrefs,Bookmarks,ReadingPosition}Context.tsx`, `src/components/quran/*`,
+`src/pages/quran/{ReaderPage,BookmarksPage}.tsx`, `src/lib/{storage,utils}/*`.
+Diubah: `routes/index.tsx`, `App.tsx`, `QuranPage`, `SurahListItem`, `Sidebar`, `ProfileMenu`, `HomePage`, `SettingsPage`,
+`LoginPage`, `RegisterPage`, `package.json` (script `quran:*`), `.gitignore`, `.env.example`, `vite-env.d.ts`.
+
+## Checklist verifikasi Part 03 (semuanya belum dijalankan)
+
+- [ ] `npm run build`
+- [ ] Migrasi berhasil; `quran:validate` lulus; `quran:import` selesai; `quran_dataset_info.validated = true`
+- [ ] Sampel ayat cocok dengan Mushaf cetak; terjemahan lengkap 6.236
+- [ ] Buka Al-Fatihah, surah lain, An-Nas; prev/next; Juz 1–30 membuka ayat awal yang benar; pencarian surah (Latin, Arab, nomor)
+- [ ] Harakat Arab tidak terpotong di 360/390/430/768/1024/1440/1920 px; tema terang/gelap/sistem
+- [ ] Guest: baca tanpa login, buat penanda, muat ulang (tetap ada)
+- [ ] Login: penanda guest tergabung tanpa duplikat; posisi baca tersinkron; perangkat kedua melihat data yang sama
+- [ ] RLS: user B tidak bisa membaca/mengubah penanda atau posisi user A (uji dengan 2 akun)
+- [ ] Salin Arab, salin terjemahan, bagikan; Console bersih
+
+## Keterbatasan
+
+- Data belum diimpor; format `quran-data.xml` dan `quran-uthmani.txt` diasumsikan, belum dilihat langsung (parser gagal keras bila beda).
+- Font Al-Qur'an khusus belum dipasang (memakai fallback serif/Amiri bila ada di perangkat). Pilih dan pasang font berlisensi yang jelas
+  (mis. dari King Fahd Complex atau KFGQPC / Amiri Quran) lalu isi `fontFamily.quran` di `tailwind.config.js`; uji harakat tiap font.
+- Arti surah bahasa Indonesia kosong (Tanzil hanya punya arti Inggris). Pencarian ayat hanya pada terjemahan, tidak pada teks Arab.
+- Penanda guest yang bentrok dengan penanda server: catatan server dipertahankan.
+- Belum ada penomoran halaman Mushaf di UI (kolom `page_number` tersedia). Belum ada test otomatis selain validator.
+- Audio, tajwid, tafsir, hafalan, khatam: sengaja belum ada (Part 04+).
+
+**Berikutnya: Part 04 — Audio.** Jangan dimulai sebelum Part 03 direview dan datanya terverifikasi.

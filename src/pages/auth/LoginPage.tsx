@@ -94,6 +94,11 @@ export function LoginPage() {
           Daftar
         </Link>
       </p>
+      <p className="mt-3 text-center text-sm">
+        <Link to="/quran" className="inline-flex min-h-[44px] items-center font-semibold text-brand hover:underline">
+          Baca Al-Qur’an tanpa masuk
+        </Link>
+      </p>
     </div>
   )
 }

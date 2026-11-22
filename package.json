@@ -7,7 +7,10 @@
     "dev": "vite",
     "typecheck": "tsc --noEmit",
     "build": "tsc --noEmit && vite build",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "quran:validate": "node scripts/quran/import-quran.mjs",
+    "quran:import": "node --env-file=.env.local scripts/quran/import-quran.mjs --upload",
+    "quran:selftest": "node scripts/quran/selftest.mjs"
   },
   "dependencies": {
     "@fontsource-variable/plus-jakarta-sans": "^5.1.0",

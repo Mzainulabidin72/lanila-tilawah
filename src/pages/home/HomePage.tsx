@@ -10,6 +10,9 @@ import { PlaceholderNote } from '@/components/shared/PlaceholderNote'
 import { WeeklyActivityChart } from '@/components/shared/WeeklyActivityChart'
 import { useAuth } from '@/hooks/useAuth'
 import { useComingSoon } from '@/hooks/useComingSoon'
+import { useReadingPosition } from '@/hooks/useReadingPosition'
+import { useAsync } from '@/hooks/useAsync'
+import { quranService } from '@/services/quranService'
 
 function greeting(hour: number): string {
   if (hour < 11) return 'Selamat pagi'
@@ -28,6 +31,9 @@ const QUICK = [
 export function HomePage() {
   const { displayName } = useAuth()
   const soon = useComingSoon()
+  const { position } = useReadingPosition()
+  const surahs = useAsync(() => quranService.getSurahs(), [])
+  const surahName = position ? (surahs.data?.find((x) => x.id === position.surahId)?.name_latin ?? `Surah ${position.surahId}`) : null
   const now = new Date()
   const dateLabel = new Intl.DateTimeFormat('id-ID', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' }).format(now)
 
@@ -43,21 +49,29 @@ export function HomePage() {
 
       <div className="grid gap-4 lg:grid-cols-3">
         <Card className="space-y-5 border-primary/30 bg-primary-soft p-5 sm:p-6 lg:col-span-2">
-          <div className="flex items-center justify-between gap-3">
-            <SectionHeader title="Lanjutkan membaca" />
-            <Badge tone="gold">Placeholder</Badge>
-          </div>
+          <SectionHeader title="Lanjutkan membaca" />
           <div className="flex items-center gap-4">
             <span className="flex h-14 w-14 shrink-0 items-center justify-center rounded-2xl bg-surface text-brand">
               <BookOpen className="h-7 w-7" aria-hidden />
             </span>
             <div className="min-w-0">
-              <p className="text-lg font-bold text-ink">Nama surah</p>
-              <p className="type-caption">Ayat — · belum ada bacaan terakhir</p>
+              {position ? (
+                <>
+                  <p className="text-lg font-bold text-ink">{surahName}</p>
+                  <p className="type-caption">
+                    Ayat {position.ayahNumber} · {new Intl.DateTimeFormat('id-ID', { dateStyle: 'medium', timeStyle: 'short' }).format(new Date(position.readAt))}
+                  </p>
+                </>
+              ) : (
+                <>
+                  <p className="text-lg font-bold text-ink">Belum ada bacaan terakhir</p>
+                  <p className="type-caption">Posisi bacaanmu akan tersimpan otomatis.</p>
+                </>
+              )}
             </div>
           </div>
-          <Link to="/quran" className={buttonStyles('primary')}>
-            Lanjutkan membaca
+          <Link to={position ? `/quran/${position.surahId}?ayah=${position.ayahNumber}` : '/quran'} className={buttonStyles('primary')}>
+            {position ? 'Lanjutkan membaca' : 'Mulai membaca'}
           </Link>
         </Card>
 

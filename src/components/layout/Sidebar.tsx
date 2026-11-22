@@ -1,5 +1,5 @@
-import { Link } from 'react-router-dom'
-import { LogOut, Settings } from 'lucide-react'
+import { Link, useLocation } from 'react-router-dom'
+import { LogIn, LogOut, Settings } from 'lucide-react'
 import { Logo } from '@/components/shared/Logo'
 import { Avatar } from '@/components/ui/Avatar'
 import { NavLinks } from '@/components/navigation/NavLinks'
@@ -9,8 +9,9 @@ import { useLogout } from '@/hooks/useLogout'
 const ROW = 'type-nav flex min-h-[44px] w-full items-center justify-center gap-3 rounded-xl px-3 transition-colors xl:justify-start'
 
 export function Sidebar() {
-  const { displayName, user } = useAuth()
+  const { displayName, user, loading } = useAuth()
   const logout = useLogout()
+  const { pathname, search } = useLocation()
 
   return (
     <aside className="fixed inset-y-0 left-0 z-30 hidden w-20 flex-col border-r border-line bg-surface md:flex xl:w-64">
@@ -23,6 +24,15 @@ export function Sidebar() {
         <NavLinks />
       </div>
 
+      {!loading && !user ? (
+        <div className="space-y-1 border-t border-line p-3 xl:p-4">
+          <Link to="/login" state={{ from: pathname + search }} title="Masuk" className={`${ROW} bg-primary text-white hover:bg-primary-dark`}>
+            <LogIn className="h-5 w-5 shrink-0" aria-hidden />
+            <span className="sr-only xl:not-sr-only">Masuk</span>
+          </Link>
+          <p className="type-caption hidden px-1 pt-1 xl:block">Masuk untuk menyinkronkan penanda dan posisi baca.</p>
+        </div>
+      ) : loading ? null : (
       <div className="space-y-1 border-t border-line p-3 xl:p-4">
         <Link to="/profil" title="Profil" className={`${ROW} text-ink hover:bg-primary-soft/60`}>
           <Avatar name={displayName} />
@@ -40,6 +50,7 @@ export function Sidebar() {
           <span className="sr-only xl:not-sr-only">Keluar</span>
         </button>
       </div>
+      )}
     </aside>
   )
 }

@@ -12,6 +12,8 @@ import { NotFoundPage } from '@/pages/errors/NotFoundPage'
 // Halaman dimuat on-demand; fallback = PageSkeleton di AppLayout.
 const HomePage = lazy(() => import('@/pages/home/HomePage').then((m) => ({ default: m.HomePage })))
 const QuranPage = lazy(() => import('@/pages/quran/QuranPage').then((m) => ({ default: m.QuranPage })))
+const ReaderPage = lazy(() => import('@/pages/quran/ReaderPage').then((m) => ({ default: m.ReaderPage })))
+const BookmarksPage = lazy(() => import('@/pages/quran/BookmarksPage').then((m) => ({ default: m.BookmarksPage })))
 const AudioPage = lazy(() => import('@/pages/audio/AudioPage').then((m) => ({ default: m.AudioPage })))
 const LearningPage = lazy(() => import('@/pages/learning/LearningPage').then((m) => ({ default: m.LearningPage })))
 const MemorizationPage = lazy(() => import('@/pages/memorization/MemorizationPage').then((m) => ({ default: m.MemorizationPage })))
@@ -34,10 +36,14 @@ export function AppRoutes() {
         <Route path="/reset-password" element={<ResetPasswordPage />} />
       </Route>
 
-      <Route element={<ProtectedRoute />}>
-        <Route element={<AppLayout />}>
+      {/* Membaca Al-Qur'an tidak memerlukan login; fitur lain tetap terproteksi. */}
+      <Route element={<AppLayout />}>
+        <Route path="/quran" element={<QuranPage />} />
+        <Route path="/quran/penanda" element={<BookmarksPage />} />
+        <Route path="/quran/:surahId" element={<ReaderPage />} />
+
+        <Route element={<ProtectedRoute />}>
           <Route index element={<HomePage />} />
-          <Route path="/quran" element={<QuranPage />} />
           <Route path="/audio" element={<AudioPage />} />
           <Route path="/belajar" element={<LearningPage />} />
           <Route path="/hafalan" element={<MemorizationPage />} />

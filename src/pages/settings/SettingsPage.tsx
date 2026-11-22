@@ -14,6 +14,7 @@ import { useLogout } from '@/hooks/useLogout'
 import { useComingSoon } from '@/hooks/useComingSoon'
 import { EditProfileDialog } from './EditProfileDialog'
 import { ChangePasswordDialog } from './ChangePasswordDialog'
+import { ReaderSettingsSheet } from '@/components/quran/ReaderSettingsSheet'
 
 function Row({ label, hint, children }: { label: string; hint?: string; children: ReactNode }) {
   return (
@@ -27,22 +28,6 @@ function Row({ label, hint, children }: { label: string; hint?: string; children
   )
 }
 
-function SoonRow({ icon: Icon, label, hint, onClick }: { icon: typeof Bell; label: string; hint: string; onClick: () => void }) {
-  return (
-    <button type="button" onClick={onClick} className="flex min-h-[64px] w-full items-center gap-3 py-3 text-left">
-      <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-primary-soft text-brand">
-        <Icon className="h-5 w-5" aria-hidden />
-      </span>
-      <span className="min-w-0 flex-1">
-        <span className="type-label block">{label}</span>
-        <span className="type-caption block">{hint}</span>
-      </span>
-      <Badge tone="gold">Segera</Badge>
-      <ChevronRight className="h-4 w-4 shrink-0 text-muted" aria-hidden />
-    </button>
-  )
-}
-
 export function SettingsPage() {
   const { user, displayName } = useAuth()
   const logout = useLogout()
@@ -50,6 +35,7 @@ export function SettingsPage() {
   const { hash } = useLocation()
   const [editOpen, setEditOpen] = useState(false)
   const [passwordOpen, setPasswordOpen] = useState(false)
+  const [readerOpen, setReaderOpen] = useState(false)
 
   useEffect(() => {
     if (hash === '#preferensi') document.getElementById('preferensi')?.scrollIntoView({ block: 'start' })
@@ -114,7 +100,16 @@ export function SettingsPage() {
             <Badge tone="gold">Segera</Badge>
             <Switch checked={false} onChange={() => undefined} label="Pengingat membaca (belum tersedia)" disabled />
           </div>
-          <SoonRow icon={TypeIcon} label="Preferensi membaca" hint="Ukuran teks dan tampilan ayat." onClick={() => soon('Preferensi membaca', 'Pengaturan tampilan bacaan tersedia bersama pembaca Al-Qur’an di Part 03.')} />
+          <button type="button" onClick={() => setReaderOpen(true)} className="flex min-h-[64px] w-full items-center gap-3 py-3 text-left">
+            <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-primary-soft text-brand">
+              <TypeIcon className="h-5 w-5" aria-hidden />
+            </span>
+            <span className="min-w-0 flex-1">
+              <span className="type-label block">Preferensi membaca</span>
+              <span className="type-caption block">Ukuran teks Arab dan terjemahan.</span>
+            </span>
+            <ChevronRight className="h-4 w-4 shrink-0 text-muted" aria-hidden />
+          </button>
         </div>
       </Card>
 
@@ -144,6 +139,7 @@ export function SettingsPage() {
 
       <EditProfileDialog open={editOpen} onClose={() => setEditOpen(false)} />
       <ChangePasswordDialog open={passwordOpen} onClose={() => setPasswordOpen(false)} />
+      <ReaderSettingsSheet open={readerOpen} onClose={() => setReaderOpen(false)} />
     </div>
   )
 }
