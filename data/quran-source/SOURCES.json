@@ -1,0 +1,41 @@
+{
+  "_note": "Catatan sumber. Isi kolom null setelah mengunduh. Status memakai label: VERIFIED, DOWNLOADED, VALIDATED, IMPORTED, MANUAL REVIEW REQUIRED, PERMISSION REQUIRED, BLOCKED.",
+  "arabic_text": {
+    "provider": "Tanzil Project",
+    "download_page": "http://tanzil.net/download/",
+    "chosen_options": { "quran_type": "uthmani", "output": "txt-2 (text with verse numbers)", "pause_marks": null, "sajdah_signs": null, "rub_el_hizb_signs": null },
+    "file": "original/quran-uthmani.txt",
+    "version": null,
+    "downloaded_at": null,
+    "sha256": null,
+    "license": "Creative Commons Attribution 3.0; salinan verbatim, mengubah teks TIDAK diizinkan; cantumkan sumber (Tanzil.net) dan tautan ke http://tanzil.net; sertakan pemberitahuan hak cipta pada berkas turunan",
+    "status": { "source_and_license": "VERIFIED (teks lisensi dibaca dari salinan sekunder; konfirmasi pada header berkas hasil unduhan)", "download": "BLOCKED (tidak ada akses internet di lingkungan penyusun; unduh manual)", "validation": "NOT RUN", "import": "NOT RUN", "manual_review": "MANUAL REVIEW REQUIRED" }
+  },
+  "metadata": {
+    "provider": "Tanzil Project (Quran Metadata)",
+    "doc_page": "https://tanzil.net/docs/Quran_Metadata",
+    "url": "http://tanzil.net/res/text/metadata/quran-data.xml",
+    "file": "original/quran-data.xml",
+    "version": "1.0 (menurut halaman dokumentasi)",
+    "downloaded_at": null,
+    "sha256": null,
+    "status": { "download": "BLOCKED (server menolak akses otomatis; unduh lewat browser)", "validation": "NOT RUN" }
+  },
+  "translation_recommended": {
+    "provider": "Kementerian Agama RI (terjemahan), diterbitkan melalui QuranEnc.com",
+    "page": "https://quranenc.com/en/browse/indonesian_affairs",
+    "api": "https://quranenc.com/api/v1/translation/sura/indonesian_affairs/{1..114}",
+    "dir": "original/quranenc-indonesian_affairs/",
+    "version": null,
+    "downloaded_at": null,
+    "license_terms": "7 syarat re-publish (lihat docs/QURAN_DATA.md); tidak ada klausul non-komersial pada syarat yang dibaca; penggunaan komersial TIDAK dinyatakan eksplisit",
+    "status": { "terms": "VERIFIED (dibaca di halaman sumber)", "commercial_use": "MANUAL REVIEW REQUIRED (konfirmasi tertulis ke QuranEnc dan LPMQ Kemenag)", "download": "BLOCKED (tidak ada internet di lingkungan penyusun; jalankan npm run quran:fetch-translation)", "import": "NOT RUN" }
+  },
+  "translation_alternative": {
+    "provider": "Tanzil id.indonesian (Indonesian Ministry of Religious Affairs)",
+    "page": "https://tanzil.net/trans/",
+    "file": "original/id.indonesian.txt",
+    "license_terms": "Hanya untuk tujuan non-komersial; selain itu perlu izin penerjemah/penerbit",
+    "status": { "terms": "VERIFIED", "commercial_use": "PERMISSION REQUIRED", "download": "NOT DONE" }
+  }
+}

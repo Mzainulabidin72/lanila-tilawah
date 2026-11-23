@@ -11,3 +11,12 @@ dist
 data/quran-source/*
 !data/quran-source/README.md
 data/quran-build
+!data/quran-source/SOURCES.json
+!data/quran-source/original/
+!data/quran-source/processed/
+# isi folder tetap diabaikan (berkas asli/terjemahan berlisensi tidak di-commit); hanya penanda & manifes checksum
+data/quran-source/original/*
+!data/quran-source/original/.gitkeep
+!data/quran-source/original/MANIFEST.json
+data/quran-source/processed/*
+!data/quran-source/processed/.gitkeep

@@ -1,5 +1,5 @@
 {
- "_note": "Jumlah ayat per surah (konvensi Hafs/Kufi). Ditulis dari data sementara Part 02; BELUM diverifikasi per-item terhadap sumber independen. Dipakai sebagai pemeriksaan silang tiga arah bersama teks dan metadata Tanzil: setiap selisih dilaporkan sebagai ERROR untuk ditinjau manusia.",
+ "_note": "Jumlah ayat per surah (konvensi Hafs/Kufi, total 6236). Awalnya dari data sementara Part 02; kemudian DICOCOKKAN 114/114 dengan indeks surah QuranEnc (https://quranenc.com/en/browse/indonesian_affairs, dibaca 23 Nov 2026). Tetap dipakai sebagai pemeriksaan silang tiga arah bersama teks dan metadata Tanzil: setiap selisih dilaporkan sebagai ERROR untuk ditinjau manusia.",
  "counts": [
   7,
   286,

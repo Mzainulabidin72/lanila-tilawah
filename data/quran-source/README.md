@@ -1,19 +1,18 @@
-# Berkas sumber data Al-Qur'an (diunduh manual)
+# Berkas sumber data Al-Qur'an
 
-Folder ini sengaja kosong. Unduh berkas berikut dari sumber resminya, JANGAN ubah isinya sama sekali
-(lisensi melarang perubahan), lalu taruh dengan nama persis seperti di bawah.
+Lihat **docs/QURAN_DATA.md** (riset sumber, lisensi, langkah lengkap) dan **SOURCES.json** (catatan versi/tanggal/status).
 
-| Berkas | Sumber | Catatan |
-| --- | --- | --- |
-| `quran-uthmani.txt` | https://tanzil.net/download/ → Quran Type: **Uthmani**, Output: **Text (with aya numbers)** | Format `sura\|aya\|teks`. Biarkan opsi tanda baca/pause/sajda pada pengaturan bawaan dan catat pilihanmu. |
-| `quran-data.xml` | https://tanzil.net/docs/Quran_Metadata (tautan `quran-data.xml`) | Metadata surah, juz, halaman Mushaf Madinah. |
-| `id.indonesian.txt` | https://tanzil.net/trans/id.indonesian (opsional) | Terjemahan Kemenag RI. **Hanya untuk non-komersial**, lihat docs/QURAN_DATA.md. |
+Struktur:
+- `original/`: berkas asli hasil unduhan. **Jangan diedit atau ditimpa.** Isinya tidak di-commit; hanya `MANIFEST.json` (SHA-256) yang boleh.
+- `processed/`: keluaran transformasi (saat ini tidak ada transformasi).
 
-Catat versi/tanggal unduhan, lalu jalankan:
+Berkas yang dibutuhkan (nama persis):
 
-```bash
-npm run quran:validate            # validasi saja
-npm run quran:import              # validasi + unggah (butuh .env.local, lihat docs/QURAN_DATA.md)
-```
+| Berkas | Sumber |
+| --- | --- |
+| `original/quran-uthmani.txt` | http://tanzil.net/download/ → Uthmani, Text (with aya numbers) |
+| `original/quran-data.xml` | http://tanzil.net/res/text/metadata/quran-data.xml |
+| `original/quranenc-indonesian_affairs/{1..114}.json` | `npm run quran:fetch-translation` (API resmi QuranEnc), **hanya setelah keputusan lisensi** |
+| `original/id.indonesian.txt` | alternatif Tanzil, **hanya non-komersial** |
 
-Isi folder ini diabaikan Git (`.gitignore`) kecuali README ini.
+Setelah mengunduh: `npm run quran:record`, lalu `npm run quran:validate`. Isi tanggal, versi, dan checksum di `SOURCES.json`.

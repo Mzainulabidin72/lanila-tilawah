@@ -39,6 +39,8 @@ export interface DatasetInfo {
   translation_translator: string | null
   translation_license: string | null
   translation_attribution: string | null
+  translation_version: string | null
+  translation_source_url: string | null
 }
 
 export type QuranStatus =

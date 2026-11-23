@@ -103,7 +103,7 @@ export function validateDataset({ ayahs, meta, expectedCounts, translation }) {
     const metaCount = meta.suras[s - 1]?.ayas
     const tableCount = expectedCounts[s - 1]
     if (nums.length !== metaCount) err(`Surah ${s}: teks ${nums.length} ayat, metadata Tanzil ${metaCount}`)
-    if (nums.length !== tableCount) err(`Surah ${s}: teks ${nums.length} ayat, tabel acuan ${tableCount} (periksa manual; tabel acuan belum terverifikasi independen)`)
+    if (nums.length !== tableCount) err(`Surah ${s}: teks ${nums.length} ayat, tabel acuan ${tableCount} (tabel acuan cocok 114/114 dengan indeks QuranEnc; tinjau manual sebelum melanjutkan)`)
     nums.forEach((n, i) => { if (n !== i + 1) { err(`Surah ${s}: penomoran ayat tidak berurutan/ada yang hilang (posisi ${i + 1} berisi ${n})`) } })
   }
 
@@ -181,8 +181,52 @@ export function buildRecords({ ayahs, meta, translation, translationInfo }) {
     translationRows: translation
       ? translation.map((t) => ({
           ayah_id: idOf.get(`${t.surah}:${t.ayah}`), language_code: translationInfo.language,
-          translator_name: translationInfo.translator, translation_text: t.text, source_reference: translationInfo.source,
+          translator_name: translationInfo.translator, translation_text: t.text, source_reference: translationInfo.source, footnotes: t.footnotes ?? null,
         }))
       : [],
+  }
+}
+
+/**
+ * Respons API QuranEnc untuk SATU surah (GET /api/v1/translation/sura/{key}/{sura}).
+ * Dokumentasi API menyebut tiap entri memuat "sura", "aya", "translation", "footnotes".
+ * Pembungkus respons (mis. kunci "result") belum dilihat langsung, jadi parser menerima array langsung,
+ * { result: [...] }, atau properti array pertama, dan gagal keras bila tidak cocok.
+ * Teks terjemahan dan catatan kaki disimpan APA ADANYA (syarat QuranEnc: tanpa ubah/tambah/hapus).
+ */
+export function parseQuranEncSura(content, expectedSura, label) {
+  let json
+  try { json = JSON.parse(content) } catch { throw new Error(`${label}: bukan JSON yang valid`) }
+  const arr = Array.isArray(json) ? json : Array.isArray(json?.result) ? json.result : Object.values(json ?? {}).find(Array.isArray)
+  if (!arr) throw new Error(`${label}: tidak ditemukan array hasil pada respons`)
+  return arr.map((r, i) => {
+    const surah = Number(r.sura), ayah = Number(r.aya)
+    if (!Number.isInteger(surah) || !Number.isInteger(ayah) || typeof r.translation !== 'string') {
+      throw new Error(`${label}: entri ${i + 1} tidak memiliki sura/aya/translation yang valid`)
+    }
+    if (surah !== expectedSura) throw new Error(`${label}: entri ${i + 1} bernomor surah ${surah}, diharapkan ${expectedSura}`)
+    return { surah, ayah, text: r.translation, footnotes: typeof r.footnotes === 'string' && r.footnotes !== '' ? r.footnotes : null }
+  })
+}
+
+/** Laporan pencocokan Arab <-> terjemahan berdasarkan surah:ayat (bukan kemiripan teks atau posisi array). */
+export function crossCheck(ayahs, translation) {
+  const arabic = new Set(ayahs.map((r) => `${r.surah}:${r.ayah}`))
+  const t = new Map()
+  const duplicates = []
+  for (const r of translation) {
+    const k = `${r.surah}:${r.ayah}`
+    if (t.has(k)) duplicates.push(k)
+    t.set(k, r)
+  }
+  const empty = [...t.entries()].filter(([, r]) => r.text.trim() === '').map(([k]) => k)
+  return {
+    arabicCount: arabic.size,
+    translationCount: translation.length,
+    matched: [...arabic].filter((k) => t.has(k)).length,
+    missingTranslation: [...arabic].filter((k) => !t.has(k)),
+    translationWithoutArabic: [...t.keys()].filter((k) => !arabic.has(k)),
+    duplicates,
+    emptyTranslation: empty,
   }
 }

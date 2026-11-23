@@ -1,7 +1,7 @@
 // Uji skrip validator dengan data SINTETIS. Isinya BUKAN Al-Qur'an dan tidak pernah dikirim ke database.
 // Teks "Arab" sintetis hanyalah huruf alif berulang agar lolos pemeriksaan aksara.
 import { readFileSync } from 'node:fs'
-import { parseVerseFile, parseMetadata, validateDataset } from './lib.mjs'
+import { parseVerseFile, parseMetadata, validateDataset, parseQuranEncSura, crossCheck } from './lib.mjs'
 
 const counts = JSON.parse(readFileSync(new URL('./expected-counts.json', import.meta.url), 'utf8')).counts
 const FAKE = '\u0627\u0627\u0627'
@@ -48,6 +48,27 @@ expectErr('jumlah halaman salah terdeteksi', run(undefined, (x) => x.replace(/<p
 expectErr('tipe tempat turun tidak dikenal terdeteksi', run(undefined, (x) => x.replace('type="Meccan"', 'type="Unknown"')), 'tidak dikenal')
 expectErr('basmalah menempel di ayat 1 terdeteksi', run((l) => l.map((x) => (x.startsWith('2|1|') ? x + FAKE : x)).map((x) => (x.startsWith('2|1|') ? x.replace('2|1|', '2|1|' + FAKE) : x))), 'basmalah')
 expectErr('terjemahan hilang terdeteksi', run(undefined, undefined, (l) => l.filter((_, i) => i !== 3)), 'Terjemahan: 1:4')
+
+// --- parser QuranEnc + pencocokan silang ---
+const expectThrow = (name, fn, needle) => {
+  let msg = null
+  try { fn() } catch (e) { msg = e.message }
+  const ok = msg !== null && msg.includes(needle)
+  console.log(`${ok ? 'PASS' : 'FAIL'}  ${name}`)
+  if (!ok) { failed++; console.log('    didapat:', msg) }
+}
+const qe = (arr) => JSON.stringify({ result: arr })
+const okRows = parseQuranEncSura(qe([{ sura: '1', aya: '1', translation: 't1', footnotes: '' }, { sura: '1', aya: '2', translation: 't2', footnotes: 'catatan' }]), 1, 'x')
+const qeOk = okRows.length === 2 && okRows[0].footnotes === null && okRows[1].footnotes === 'catatan' && okRows[1].text === 't2'
+console.log(`${qeOk ? 'PASS' : 'FAIL'}  parser QuranEnc: teks dan catatan kaki dipertahankan apa adanya`); if (!qeOk) failed++
+expectThrow('parser QuranEnc: nomor surah salah ditolak', () => parseQuranEncSura(qe([{ sura: '2', aya: '1', translation: 't' }]), 1, 'x'), 'diharapkan 1')
+expectThrow('parser QuranEnc: entri tanpa translation ditolak', () => parseQuranEncSura(qe([{ sura: '1', aya: '1' }]), 1, 'x'), 'tidak memiliki')
+expectThrow('parser QuranEnc: bukan JSON ditolak', () => parseQuranEncSura('<html>', 1, 'x'), 'bukan JSON')
+const ay = [{ surah: 1, ayah: 1, text: 'a' }, { surah: 1, ayah: 2, text: 'b' }]
+const cc = crossCheck(ay, [{ surah: 1, ayah: 1, text: 't' }, { surah: 1, ayah: 1, text: 't' }, { surah: 2, ayah: 1, text: ' ' }])
+const ccOk = cc.matched === 1 && cc.missingTranslation[0] === '1:2' && cc.translationWithoutArabic[0] === '2:1' && cc.duplicates[0] === '1:1' && cc.emptyTranslation[0] === '2:1'
+console.log(`${ccOk ? 'PASS' : 'FAIL'}  crossCheck: hilang, kelebihan, duplikat, dan kosong dilaporkan per surah:ayat`); if (!ccOk) { failed++; console.log(cc) }
+
 let threw = false
 try { parseMetadata('<quran></quran>') } catch { threw = true }
 console.log(`${threw ? 'PASS' : 'FAIL'}  skema metadata tidak sesuai ditolak`); if (!threw) failed++

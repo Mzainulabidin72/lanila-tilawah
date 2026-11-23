@@ -39,6 +39,7 @@ const PLACEHOLDER_INFO: DatasetInfo = {
   validated: false, total_surah: 114, total_ayah: 6236, numbering_convention: null,
   text_source: 'PLACEHOLDER', text_version: null, text_license: null, text_attribution: null,
   translation_language: null, translation_translator: null, translation_license: null, translation_attribution: null,
+  translation_version: null, translation_source_url: null,
 }
 const placeholderSurahs = (): QuranSurah[] =>
   SURAHS.map((s, i) => ({

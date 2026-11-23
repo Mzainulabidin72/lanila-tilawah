@@ -161,7 +161,7 @@ edit nama profil, ganti kata sandi, tab, pencarian/filter surah dan qari, lazy-l
 > mengimpor dataset Tanzil dan validasinya lulus. Baca `docs/QURAN_DATA.md` (sumber, lisensi, langkah impor).
 >
 > ⚠️ **Belum diuji:** `npm run build`, tampilan di browser, sinkronisasi Supabase, RLS. Yang sudah diuji di sini:
-> `node scripts/quran/selftest.mjs` (18/18 lulus, data sintetis) dan pemeriksaan sintaks 102 file TypeScript (0 error).
+> `node scripts/quran/selftest.mjs` (23/23 lulus, data sintetis) dan pemeriksaan sintaks 102 file TypeScript (0 error).
 > Tipe (`tsc`) belum bisa diperiksa tanpa `node_modules`.
 
 ## Urutan kerja yang benar
@@ -228,3 +228,25 @@ Diubah: `routes/index.tsx`, `App.tsx`, `QuranPage`, `SurahListItem`, `Sidebar`, 
 - Audio, tajwid, tafsir, hafalan, khatam: sengaja belum ada (Part 04+).
 
 **Berikutnya: Part 04 — Audio.** Jangan dimulai sebelum Part 03 direview dan datanya terverifikasi.
+
+
+---
+
+# Part 03b — Riset & persiapan dataset Al-Qur'an
+
+Laporan lengkap (perbandingan sumber, lisensi, penilaian penggunaan komersial, status per item): **`docs/QURAN_DATA.md`**.
+Catatan sumber/versi/checksum: `data/quran-source/SOURCES.json`. Templat permohonan izin: `docs/PERMISSION_REQUEST_TEMPLATE.md`.
+
+**Status: BLOCKED pada pengunduhan** (tidak ada internet di lingkungan penyusun). Belum ada data yang diunduh, divalidasi, atau diimpor.
+
+Ringkas:
+- Teks Arab: **Tanzil (Uthmani)**, CC BY 3.0, salinan verbatim, atribusi + tautan tanzil.net. Metadata: Tanzil `quran-data.xml`.
+- Terjemahan: **Kemenag via QuranEnc** (syarat re-publish 7 poin, tidak ada klausul non-komersial yang terbaca, penggunaan komersial perlu konfirmasi tertulis).
+  Tanzil `id.indonesian` hanya non-komersial → **PERMISSION REQUIRED** untuk produk komersial.
+- Tabel jumlah ayat acuan dicocokkan 114/114 dengan indeks QuranEnc.
+
+Skrip baru: `npm run quran:fetch-translation` (API resmi QuranEnc), `npm run quran:record` (SHA-256 → `original/MANIFEST.json`),
+`npm run quran:validate/import` (kini mendukung `--translation-format quranenc`, catatan kaki, versi, laporan pencocokan Arab↔terjemahan).
+Migrasi baru: `20260103000000_translation_provenance.sql`. Self-test validator: 23/23 lulus (data sintetis).
+
+Belum dikerjakan: unduh, validasi data nyata, impor, verifikasi manual terhadap Mushaf cetak, uji pembaca. Catatan kaki terjemahan disimpan tetapi belum tampil di UI.

@@ -10,7 +10,9 @@
     "preview": "vite preview",
     "quran:validate": "node scripts/quran/import-quran.mjs",
     "quran:import": "node --env-file=.env.local scripts/quran/import-quran.mjs --upload",
-    "quran:selftest": "node scripts/quran/selftest.mjs"
+    "quran:selftest": "node scripts/quran/selftest.mjs",
+    "quran:fetch-translation": "node scripts/quran/fetch-quranenc.mjs",
+    "quran:record": "node scripts/quran/record-sources.mjs"
   },
   "dependencies": {
     "@fontsource-variable/plus-jakarta-sans": "^5.1.0",

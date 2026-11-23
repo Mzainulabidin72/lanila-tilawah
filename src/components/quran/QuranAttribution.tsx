@@ -14,7 +14,8 @@ export function QuranAttribution({ info, placeholder }: { info: DatasetInfo; pla
       </p>
       {info.translation_language && (
         <p>
-          Terjemahan: {info.translation_attribution ?? info.translation_translator}. {info.translation_license}
+          Terjemahan: {info.translation_attribution ?? info.translation_translator}
+          {info.translation_version ? `, versi ${info.translation_version}` : ''}. {info.translation_license}
         </p>
       )}
     </footer>
