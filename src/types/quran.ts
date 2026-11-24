@@ -18,6 +18,10 @@ export interface QuranVerse {
   juz_number: number
   page_number: number | null
   translation: string | null
+  /** Hanya ayat 1: teks lengkap persis seperti sumber (termasuk basmalah) untuk salin/bagikan. arabic_text berisi sisa setelah basmalah. */
+  full_arabic_text?: string
+  /** true bila teks mengandung basmalah tetapi tidak dapat dipisah dengan aman; basmalah tampil inline, tanpa header. */
+  basmalah_inline?: boolean
 }
 
 export interface QuranJuz {

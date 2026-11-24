@@ -69,6 +69,7 @@ writeFileSync('data/quran-build/validation-report.json', JSON.stringify(report, 
 if (cross) writeFileSync('data/quran-build/cross-dataset-report.json', JSON.stringify(cross, null, 2))
 
 console.log(`Surah: ${stats.surahs}/${EXPECTED.surahs} | Ayat: ${stats.ayahs}/${EXPECTED.ayahs} | Juz: ${stats.juz}/${EXPECTED.juz} | Halaman: ${stats.pages}/${EXPECTED.pages}` + (stats.translation ? ` | Terjemahan: ${stats.translation.total}` : ' | Terjemahan: dilewati'))
+if (stats.basmalah) console.log(`Basmalah di dalam teks ayat 1: ${stats.basmalah.prefixed.length} surah (konvensi Tanzil: semua selain 1 dan 9)`)
 if (cross) console.log(`Pencocokan Arab↔terjemahan: ${cross.matched}/${cross.arabicCount} cocok | tanpa terjemahan: ${cross.missingTranslation.length} | terjemahan tanpa ayat Arab: ${cross.translationWithoutArabic.length} | duplikat: ${cross.duplicates.length} | kosong: ${cross.emptyTranslation.length}  (rincian: data/quran-build/cross-dataset-report.json)`)
 if (warnings.length) console.log(`\nPeringatan (${warnings.length}):\n- ` + warnings.slice(0, 20).join('\n- '))
 if (errors.length) {
@@ -82,7 +83,12 @@ if (!upload) process.exit(0)
 // ---------------- unggah ke Supabase (service_role, hanya lokal) ----------------
 const url = process.env.SUPABASE_URL || process.env.VITE_SUPABASE_URL
 const key = process.env.SUPABASE_SERVICE_ROLE_KEY
-if (!url || !key) { console.error('✗ Perlu SUPABASE_URL dan SUPABASE_SERVICE_ROLE_KEY (di .env.local, JANGAN diawali VITE_).'); process.exit(2) }
+if (!url || !key) { console.error('✗ Perlu SUPABASE_URL (atau VITE_SUPABASE_URL) dan SUPABASE_SERVICE_ROLE_KEY di .env (JANGAN diawali VITE_, jangan di-commit, jangan disalin ke Vercel).'); process.exit(2) }
+// Cegah salah pakai: kunci anon tidak bisa menulis data master (dan bukan kunci yang dimaksud).
+try {
+  const role = key.startsWith('sb_secret_') ? 'service_role' : JSON.parse(Buffer.from(key.split('.')[1], 'base64url').toString()).role
+  if (role !== 'service_role') { console.error(`✗ Kunci pada SUPABASE_SERVICE_ROLE_KEY berperan "${role}", bukan service_role. Ambil kunci service_role/secret dari Supabase Dashboard > Project Settings > API Keys.`); process.exit(2) }
+} catch { console.error('✗ Format SUPABASE_SERVICE_ROLE_KEY tidak dikenali (harus kunci service_role atau sb_secret_...).'); process.exit(2) }
 const { createClient } = await import('@supabase/supabase-js')
 const db = createClient(url, key, { auth: { persistSession: false } })
 const must = async (p, what) => { const { error } = await p; if (error) { console.error(`✗ ${what}: ${error.message}`); process.exit(3) } }

@@ -1,0 +1,20 @@
+{
+  "generatedAt": "2026-11-24T03:15:06.691Z",
+  "files": [
+    {
+      "path": "data/quran-source/original/quran-data.xml",
+      "bytes": 77234,
+      "sha256": "8867c1d88191472adec9db694b3cd9f135b1a2ef580574d32cf888dcb22c5c7a"
+    },
+    {
+      "path": "data/quran-source/original/quran-uthmani-pure.txt",
+      "bytes": 1373829,
+      "sha256": "44dfc9a21f421556ad61125bb909786d3376c83ce573820b516f34fabf737398"
+    },
+    {
+      "path": "data/quran-source/original/quran-uthmani.txt",
+      "bytes": 1409970,
+      "sha256": "aa0bf9278a177a12e6d9bef621ce37a1d24fa35168b5ae9c13ebcbe01e3686cf"
+    }
+  ]
+}

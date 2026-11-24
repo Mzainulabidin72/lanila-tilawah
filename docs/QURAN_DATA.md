@@ -101,7 +101,7 @@ npm run quran:import -- --text-version ... --accept-translation-terms --translat
 
 ## 6. Yang diperiksa validator
 
-114 surah dan urutannya; 6.236 ayat; jumlah ayat per surah **tiga arah** (teks, metadata Tanzil, tabel acuan); penomoran berurutan tanpa celah; duplikat; teks kosong; huruf Latin pada teks Arab; basmalah menempel; 30 juz dan 604 halaman (referensi ada, urutan naik, mulai 1:1); kelengkapan dan kecocokan terjemahan per `surah:ayat` (bukan kemiripan teks atau posisi). `cross-dataset-report.json` mendaftar setiap ayat yang hilang/berlebih/duplikat/kosong.
+114 surah dan urutannya; 6.236 ayat; jumlah ayat per surah **tiga arah** (teks, metadata Tanzil, tabel acuan); penomoran berurutan tanpa celah; duplikat; teks kosong; huruf Latin pada teks Arab; pola basmalah pada ayat 1 (dicatat, bukan error); 30 juz dan 604 halaman (referensi ada, urutan naik, mulai 1:1); kelengkapan dan kecocokan terjemahan per `surah:ayat` (bukan kemiripan teks atau posisi). `cross-dataset-report.json` mendaftar setiap ayat yang hilang/berlebih/duplikat/kosong.
 
 `node scripts/quran/selftest.mjs` menguji validator dengan data sintetis (bukan Al-Qur'an): 23 pengujian.
 

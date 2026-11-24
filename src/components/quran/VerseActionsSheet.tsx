@@ -44,7 +44,7 @@ export function VerseActionsSheet({ verse, surah, bookmarked, copyDisabled, onCl
   const share = async () => {
     if (!verse) return
     const url = `${window.location.origin}/quran/${surah.id}?ayah=${verse.ayah_number}`
-    const r = await shareText(composeVerse({ arabic: verse.arabic_text, translation: verse.translation, ref }), ref, url)
+    const r = await shareText(composeVerse({ arabic: verse.full_arabic_text ?? verse.arabic_text, translation: verse.translation, ref }), ref, url)
     if (r === 'copied') toast.success('Tautan dan teks ayat disalin.')
     else if (r === 'failed') toast.error('Tidak dapat membagikan ayat ini.')
     if (r !== 'cancelled') onClose()
@@ -55,7 +55,7 @@ export function VerseActionsSheet({ verse, surah, bookmarked, copyDisabled, onCl
       {verse && (
         <div className="space-y-1 pb-2">
           {copyDisabled && <Badge tone="gold" className="mb-2">Placeholder: salin dan bagikan dinonaktifkan</Badge>}
-          <Row icon={<Copy className="h-5 w-5" />} disabled={copyDisabled} onClick={() => void copy(composeVerse({ arabic: verse.arabic_text, ref }), 'Ayat disalin.')}>
+          <Row icon={<Copy className="h-5 w-5" />} disabled={copyDisabled} onClick={() => void copy(composeVerse({ arabic: verse.full_arabic_text ?? verse.arabic_text, ref }), 'Ayat disalin.')}>
             Salin ayat (Arab)
           </Row>
           <Row icon={<Languages className="h-5 w-5" />} disabled={copyDisabled || !verse.translation} onClick={() => void copy(composeVerse({ translation: verse.translation, ref }), 'Terjemahan disalin.')}>

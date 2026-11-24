@@ -9,6 +9,17 @@ export const sha256 = (s) => createHash('sha256').update(s, 'utf8').digest('hex'
 const ARABIC_RE = /[\u0600-\u06FF\u0750-\u077F\u08A0-\u08FF\uFB50-\uFDFF\uFE70-\uFEFF]/
 const LATIN_RE = /[A-Za-z]/
 
+/** Menjelaskan baris yang tidak cocok format, beserta dugaan penyebabnya (hanya untuk pesan error). */
+function describeBadLine(line) {
+  const preview = JSON.stringify(line.slice(0, 50))
+  let hint
+  if (/[\u0000\uFFFD]/.test(line)) hint = 'berkas tampak berenkode UTF-16 atau rusak; simpan/unduh ulang sebagai UTF-8'
+  else if (line.trimStart().startsWith('<')) hint = 'isinya tampak HTML/XML, bukan teks; periksa apakah yang tersimpan halaman web atau format XML'
+  else if (!line.includes('|')) hint = 'tidak ada pemisah "|": kemungkinan yang diunduh adalah "Text" biasa tanpa nomor ayat. Unduh ulang dengan opsi "Text (with aya numbers)"'
+  else hint = 'ada "|", tetapi dua bagian pertama bukan angka sura dan aya'
+  return `Awal baris: ${preview}\n  Dugaan: ${hint}`
+}
+
 /** Format Tanzil: "sura|aya|teks"; baris kosong dan komentar "#" diabaikan. */
 export function parseVerseFile(content, label) {
   const rows = []
@@ -19,7 +30,7 @@ export function parseVerseFile(content, label) {
       const line = raw.replace(/\r$/, '')
       if (line === '' || line.startsWith('#')) return
       const m = /^(\d+)\|(\d+)\|(.*)$/.exec(line)
-      if (!m) throw new Error(`${label}: baris ${i + 1} tidak sesuai format "sura|aya|teks"`)
+      if (!m) throw new Error(`${label}: baris ${i + 1} tidak sesuai format "sura|aya|teks".\n  ${describeBadLine(line)}`)
       rows.push({ surah: Number(m[1]), ayah: Number(m[2]), text: m[3] })
     })
   return rows
@@ -107,13 +118,21 @@ export function validateDataset({ ayahs, meta, expectedCounts, translation }) {
     nums.forEach((n, i) => { if (n !== i + 1) { err(`Surah ${s}: penomoran ayat tidak berurutan/ada yang hilang (posisi ${i + 1} berisi ${n})`) } })
   }
 
-  // --- bismillah tidak boleh menempel di ayat 1 surah lain (tampil terpisah di UI) ---
+  // --- pola basmalah pada ayat 1 ---
+  // Konvensi teks Tanzil: ayat 1 semua surah selain Al-Fatihah (1) dan At-Taubah (9) diawali basmalah di dalam teksnya.
+  // Teks TIDAK diubah; UI memisahkannya hanya saat tampil. Di sini hanya dicatat dan diperiksa kewajarannya.
   const bism = ayahs.find((r) => r.surah === 1 && r.ayah === 1)?.text
+  const basmalah = { prefixed: [], unprefixed: [] }
   if (bism) {
     for (const r of ayahs) {
-      if (r.ayah === 1 && r.surah !== 1 && r.text.startsWith(bism) && r.text.length > bism.length) {
-        err(`Teks: ayat ${r.surah}:1 diawali basmalah; UI akan menampilkannya dua kali (periksa pilihan berkas)`)
-      }
+      if (r.ayah !== 1 || r.surah === 1) continue
+      ;(r.text.startsWith(bism) && r.text.length > bism.length ? basmalah.prefixed : basmalah.unprefixed).push(r.surah)
+    }
+    if (basmalah.prefixed.includes(9)) err('At-Taubah (9:1) diawali basmalah; tidak lazim, periksa pilihan berkas')
+    const expectedPrefixed = Array.from({ length: 113 }, (_, i) => i + 2).filter((n) => n !== 9)
+    const notMatching = expectedPrefixed.filter((n) => !basmalah.prefixed.includes(n))
+    if (notMatching.length) {
+      warnings.push(`Ayat 1 surah [${notMatching.join(', ')}] tidak diawali basmalah yang persis sama dengan 1:1. UI menampilkan basmalah sebagai header terpisah untuk surah ini; periksa manual.`)
     }
   }
 
@@ -152,7 +171,7 @@ export function validateDataset({ ayahs, meta, expectedCounts, translation }) {
   return {
     errors,
     warnings,
-    stats: { surahs: perSurah.size, ayahs: ayahs.length, juz: meta.juz.length, pages: meta.pages.length, translation: translationStats },
+    stats: { basmalah, surahs: perSurah.size, ayahs: ayahs.length, juz: meta.juz.length, pages: meta.pages.length, translation: translationStats },
   }
 }
 

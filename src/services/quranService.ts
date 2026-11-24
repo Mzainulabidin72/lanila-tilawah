@@ -105,6 +105,19 @@ export const quranService = {
       }))
       // Jangan pernah menampilkan surah yang tidak lengkap atau penomorannya berlubang.
       if (verses.length !== surah.total_ayah || verses.some((v, i) => v.ayah_number !== i + 1)) throw incomplete(`surah ${surah.name_latin}`)
+
+      // Teks Tanzil menyertakan basmalah di dalam ayat 1 (selain surah 1 dan 9). Data tetap utuh di database;
+      // saat tampil, basmalah dipisah menjadi header. Tidak ada karakter yang diubah atau dibuang selain spasi pemisah.
+      const bism = surahId !== 1 && surahId !== 9 ? await this.getBismillah() : null
+      const first = verses[0]
+      if (bism && first.arabic_text.startsWith(bism)) {
+        const rest = first.arabic_text.slice(bism.length)
+        if (rest.length > 0 && /^\s/.test(rest)) {
+          verses[0] = { ...first, full_arabic_text: first.arabic_text, arabic_text: rest.replace(/^\s+/, '') }
+        } else {
+          verses[0] = { ...first, basmalah_inline: true }
+        }
+      }
       return verses
     })
   },

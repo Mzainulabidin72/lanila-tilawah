@@ -132,7 +132,7 @@ export function ReaderPage() {
   const translationRem = TRANSLATION_SIZES_REM[prefs.translationSize - 1]
   const actionsVerse = verses.find((v) => v.ayah_number === actionsAyah) ?? null
   const noteItem = bookmarks.items.find((i) => i.surahId === id && i.ayahNumber === noteAyah)
-  const showBismillah = id !== 1 && id !== 9 && !!bismQ.data
+  const showBismillah = id !== 1 && id !== 9 && !!bismQ.data && !verses[0]?.basmalah_inline
 
   return (
     <div className="mx-auto max-w-3xl space-y-4">

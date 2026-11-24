@@ -46,7 +46,13 @@ expectErr('juz di luar jangkauan terdeteksi', run(undefined, (x) => x.replace(/<
 expectErr('jumlah juz salah terdeteksi', run(undefined, (x) => x.replace(/<juz index="30"[^>]*\/>/, '')), 'Juz: 29')
 expectErr('jumlah halaman salah terdeteksi', run(undefined, (x) => x.replace(/<page index="604"[^>]*\/>/, '')), 'Halaman: 603')
 expectErr('tipe tempat turun tidak dikenal terdeteksi', run(undefined, (x) => x.replace('type="Meccan"', 'type="Unknown"')), 'tidak dikenal')
-expectErr('basmalah menempel di ayat 1 terdeteksi', run((l) => l.map((x) => (x.startsWith('2|1|') ? x + FAKE : x)).map((x) => (x.startsWith('2|1|') ? x.replace('2|1|', '2|1|' + FAKE) : x))), 'basmalah')
+{
+  const prefixAll = (l) => l.map((x) => (/^(\d+)\|1\|/.test(x) && !x.startsWith('1|') && !x.startsWith('9|') ? x.replace(/^(\d+)\|1\|/, `$1|1|${FAKE} `) : x))
+  const r = run(prefixAll)
+  const ok = r.errors.length === 0 && r.stats.basmalah.prefixed.length === 112 && !r.stats.basmalah.prefixed.includes(9)
+  console.log(`${ok ? 'PASS' : 'FAIL'}  pola Tanzil (basmalah di ayat 1 semua surah kecuali 1 dan 9) diterima dan dicatat`); if (!ok) { failed++; console.log(r.errors.slice(0, 3), r.stats.basmalah.prefixed.length) }
+  expectErr('basmalah menempel pada At-Taubah (9:1) dianggap error', run((l) => prefixAll(l).map((x) => (x.startsWith('9|1|') ? `9|1|${FAKE} ${FAKE}` : x))), 'At-Taubah')
+}
 expectErr('terjemahan hilang terdeteksi', run(undefined, undefined, (l) => l.filter((_, i) => i !== 3)), 'Terjemahan: 1:4')
 
 // --- parser QuranEnc + pencocokan silang ---
@@ -69,6 +75,9 @@ const cc = crossCheck(ay, [{ surah: 1, ayah: 1, text: 't' }, { surah: 1, ayah: 1
 const ccOk = cc.matched === 1 && cc.missingTranslation[0] === '1:2' && cc.translationWithoutArabic[0] === '2:1' && cc.duplicates[0] === '1:1' && cc.emptyTranslation[0] === '2:1'
 console.log(`${ccOk ? 'PASS' : 'FAIL'}  crossCheck: hilang, kelebihan, duplikat, dan kosong dilaporkan per surah:ayat`); if (!ccOk) { failed++; console.log(cc) }
 
+expectThrow('format salah: teks tanpa nomor ayat diberi petunjuk unduh ulang', () => parseVerseFile('abc def\n', 'x'), 'Text (with aya numbers)')
+expectThrow('format salah: XML diberi petunjuk', () => parseVerseFile('<?xml version="1.0"?>\n', 'x'), 'HTML/XML')
+expectThrow('format salah: UTF-16 diberi petunjuk', () => parseVerseFile('1\u0000|\u00001\u0000', 'x'), 'UTF-16')
 let threw = false
 try { parseMetadata('<quran></quran>') } catch { threw = true }
 console.log(`${threw ? 'PASS' : 'FAIL'}  skema metadata tidak sesuai ditolak`); if (!threw) failed++
